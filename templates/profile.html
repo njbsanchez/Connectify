@@ -1,0 +1,23 @@
+{%extends 'base.html'%}
+
+{% block title %}My Trackify Profile{% endblock %}
+
+{% block body %}
+
+<h2>About Me!</h2>
+<ul>
+    <li>
+        <a>Name:{{user.f_name}}{{user.l_name}}</a>
+        <a>Spotify Username: {{user.spot_user_id}}</a>
+        <a>Last Active:{{user.played_at}}</a>
+    </li>
+</ul>
+<h2>Playlists</h2>
+<h2>Frequently Played Artists</h2>
+<h2>Frequently Played Songs</h2>
+<h2>Currently Playing</h2>
+
+{% endblock %}
+
+
+
