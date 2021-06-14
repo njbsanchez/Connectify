@@ -54,6 +54,13 @@ def homepage():
         "index.html", spotify_auth_url=oauth_manager.get_authorize_url()
     )
 
+def get_sp_oauth(o_auth):
+    
+    if not o_auth.validate_token(o_auth.get_cached_token()):
+        return redirect("/")
+    else:
+        sp_oauth = Spotify(auth_manager=oauth_manager)
+        return sp_oauth
 
 def get_spotify_info():
     if not oauth_manager.validate_token(oauth_manager.get_cached_token()):
@@ -64,10 +71,11 @@ def get_spotify_info():
     return render_template("spotify-info.html", spotify=sp)
 
 
-@app.route("/playlist")
+
 def get_my_playlists():
     """
     From Spotify, get name, id, and put into a list called "playlists".
+    To be used for "edit my top playlist" page
     """
    
     if not oauth_manager.validate_token(oauth_manager.get_cached_token()):
@@ -83,18 +91,15 @@ def get_my_playlists():
         print("%d ---- %s %s %s" % (i, item['name'], item['id'], item['tracks']))
         playlists.append( {(i, item['name']): [item['id'],item['tracks']]})  
     
-    print(playlists)
+    return playlists
     
     #----create a view function----#
     
-    return render_template("play.html", spotify=sp_oauth, playlists=playlists)
 
-@app.route("/tracks")
-def get_tracks():
-    if not oauth_manager.validate_token(oauth_manager.get_cached_token()):
-            return redirect("/")
 
-    sp = Spotify(auth_manager=oauth_manager)
+def get_all_tracks():
+    
+    sp_oauth = get_sp_oauth(oauth_manager)
     
     short_term = []
     medium_term = []
@@ -117,23 +122,21 @@ def get_tracks():
                           }
             sp_range.append(track_info)
                 
-    for range in ranges:
-        print("")
-        print("")
-        print("********** Next Section *************")
-        print("")
-        for track in range:
-            print(track)
-            # print(track['name'], '//', track['artists'][0]['name'], '//',  track['artists'][0]['uri'])
+    # for range in ranges:
+    #     print("")
+    #     print("")
+    #     print("********** Next Section *************")
+    #     print("")
+    #     for track in range:
+    #         print(track)
+    #         # print(track['name'], '//', track['artists'][0]['name'], '//',  track['artists'][0]['uri'])
 
-    return render_template("tracks.html", short_term=short_term)
+    return ranges
 
-@app.route("/artists")
-def get_artists():
-    if not oauth_manager.validate_token(oauth_manager.get_cached_token()):
-            return redirect("/")
 
-    sp = Spotify(auth_manager=oauth_manager)
+def get_all_artists():
+    
+    sp_oauth = get_sp_oauth(oauth_manager)
     
     short_term = []
     medium_term = []
@@ -154,17 +157,31 @@ def get_artists():
                           }
             sp_range.append(artist_info)
             
-    for range in ranges:
-        print("")
-        print("")
-        print("********** Next Section *************")
-        print("")
-        for artist in range:
-            print(artist)
-            # print(track['name'], '//', track['artists'][0]['name'], '//',  track['artists'][0]['uri'])
+    return ranges
 
+    # for range in ranges:
+    #     print("")
+    #     print("")
+    #     print("********** Next Section *************")
+    #     print("")
+    #     for artist in range:
+    #         print(artist)
+    #         # print(track['name'], '//', track['artists'][0]['name'], '//',  track['artists'][0]['uri'])
+
+@app.route("/profile")
+def show_profilegit():
+    
+    track_ranges = get_all_tracks()
+    artist_ranges = get_all_artists()
+    
+    return render_template("tracks.html", short_term=short_term)
     return render_template("artist.html", short_term=short_term)
 
+@app.route("/playlist")
+def edit_top_playlists():
+    sp_oauth = get_sp_oauth(oauth_manager)
+    user_playlists = get_my_playlists()
+    return render_template("play.html", spotify=sp_oauth, playlists=user_playlists)
 
 if __name__ == "__main__":
     app.run(debug=True, use_reloader=True, use_debugger=True)
