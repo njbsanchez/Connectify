@@ -3,3 +3,5 @@ __pycache__
 test.py
 tryit.py
 .cache
+.env
+secrets.sh

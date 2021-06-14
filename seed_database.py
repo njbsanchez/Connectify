@@ -19,8 +19,7 @@ dummy_user ={
     "user_id": "csoledad",
     "email": "csoledad@gmail.com",
     "password": "password",
-    "f_name": "Caesar",
-    "l_name": "Soledad",
+    "name": "Caesar Soledad",
     "spot_user_id": "124566113",
     "latitude": "12345",
     "longitude": "12345",
@@ -28,31 +27,29 @@ dummy_user ={
     }
 
 format = "%Y-%m-%d"
-user_id, email, password, f_name, l_name, spot_user_id, latitude, longitude, played_at = (
+user_id, email, password, name, spot_user_id, latitude, longitude, played_at = (
             dummy_user["user_id"],
             dummy_user["email"],
-            dummy_user[ "password"],
-            dummy_user["f_name"],
-            dummy_user["l_name"],
+            dummy_userd[ "password"],
+            dummy_user["name"],
             dummy_user["spot_user_id"],
             dummy_user["latitude"],
             dummy_user["longitude"],
             dummy_user["played_at"]        #datetime.strptime( .format)
             )
     
-user = crud.create_user(email, password,f_name, l_name, spot_user_id, latitude, longitude, played_at)
+user = crud.create_user(email, password, name, spot_user_id, latitude, longitude, played_at)
 
-user_id, email, password, f_name, l_name, spot_user_id, latitude, longitude, played_at = (
-            dummy_artist["user_id"],
-            dummy_artist["email"],
-            dummy_artist][ "password"],
-            dummy_artist]["f_name"],
-            dummy_artist]["l_name"],
-            dummy_artist]["spot_user_id"],
-            dummy_artist]["latitude"],
-            dummy_artist]["longitude"],
-            dummy_artist]["played_at"]        #datetime.strptime( .format)
-            )
+# user_id, email, password, name, spot_user_id, latitude, longitude, played_at = (
+#             dummy_artist["user_id"],
+#             dummy_artist["email"],
+#             dummy_artist][ "password"],
+#             dummy_artist]["name"],
+#             dummy_artist]["spot_user_id"],
+#             dummy_artist]["latitude"],
+#             dummy_artist]["longitude"],
+#             dummy_artist]["played_at"]        #datetime.strptime( .format)
+#             )
     
-user = crud.create_user(email, password,f_name, l_name, spot_user_id, latitude, longitude, played_at)
+# user = crud.create_user(email, password,name, spot_user_id, latitude, longitude, played_at)
 
