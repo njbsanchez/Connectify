@@ -1,8 +1,6 @@
-{%extends 'base.html'%}
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
 
-{% block title %}My Trackify Profile{% endblock %}
-
-{% block body %}
 <dl>
   {% for key, val in spotify.current_user().items() %}
     <dt>{{ key }}</dt>
@@ -13,4 +11,3 @@
     </dd>
   {% endfor %}
 </dl>
-{% endblock body %}

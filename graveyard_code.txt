@@ -1,0 +1,214 @@
+profile info-------------
+
+{% comment %} <div class="container">
+    <h1>Displaying User Data</h1>
+    <p>Log in with your Spotify account and this demo will display information about you fetched using the Spotify Web API</p>
+    <button class="btn btn-primary" id="btn-login">Login</button>
+    <div id="result"></div>
+</div>
+<script id="result-template" type="text">
+    <dl>
+      <img src="{{images.0.url}}">
+      <dt>User Name</dt>
+      <dd>{{id}}</dd>
+      <dt>Display Name</dt>
+      <dd>{{display_name}}</dd>
+      <dt>Country</dt>
+      <dd>{{country}}</dd>
+      <dt>Followers</dt>
+      <dd>{{followers.total}}</dd>
+      <dt>Profile</dt>
+      <dd><a href="{{external_urls.spotify}}" target="_blank">{{external_urls.spotify}}</a></dd>
+      <dt>Email</dt>
+      <dd>{{email}}</dd>
+      <dt>Product</dt>
+      <dd>{{product}}</dd>
+    </dl>
+</script> {% endcomment %}
+
+<h2>About Me!</h2>
+<ul>
+    <li>
+        <a>Name: {{ session['user.name'] }}</a>
+        <a>Spotify Username: {{ session['user.spot_user_id'] }}</a>
+        <a>Email: {{ session['user.email'] }}</a>
+        <a>Location: Comming Soon</a>
+        <a>Last Active:{{session['user.recent_activity']}}</a>
+    </li>
+</ul>
+<h2>Playlists</h2>
+
+    {% comment %} 
+
+    iterate through list of playlists with favplaylist id
+    add button to edit which playlists to display
+
+    {% endcomment %}
+
+<h2>Frequently Played Artists</h2>
+
+   {% comment %} 
+
+    iterate through list of playlists with top_artist id
+    add button to edit which playlists to display
+
+    {% endcomment %}
+
+<h2>Frequently Played Songs</h2>
+
+
+
+<h2>Currently Playing</h2>
+
+
+{% endblock %}
+
+
+
+
+
+#--------------spotipy_queries_________________#
+
+
+import os
+
+from flask import (
+    Flask,
+    render_template,
+    session,
+    request,
+    redirect,
+    url_for, #Generates a URL to the given endpoint with the method provided.
+    flash,
+)
+
+from spotipy import Spotify, CacheHandler #Tokens are refreshed automatically and stored by default in the project main folder. As this might not suit everyone’s needs, spotipy provides a way to create customized cache handlers.The custom cache handler would need to be a class that inherits from the base cache handler.
+from spotipy.oauth2 import SpotifyOAuth
+
+# Client keys
+
+SPOTIFY_CLIENT_ID=os.environ.get('SPOTIFY_CLIENT_ID')
+SPOTIFY_CLIENT_SECRET=os.environ.get('SPOTIFY_CLIENT_SECRET')
+
+class CacheSessionHandler(CacheHandler):
+    """
+    An abstraction layer for handling the caching and retrieval of
+    authorization tokens.
+    Custom extensions of this class must implement get_cached_token
+    and save_token_to_cache methods with the same input and output
+    structure as the CacheHandler class.
+    """
+    
+    def __init__(self, session, token_key):
+        self.token_key = token_key
+        self.session = session
+        
+    def get_cached_token(self):
+        return self.session.get(self.token_key)
+    
+    def save_token_to_cache(self, token_info):
+        self.session[self.token_key] = token_info
+        session.modified = True
+        
+    
+# app = Flask(__name__)
+# app.secret_key = "DEV"
+# oauth_manager = SpotifyOAuth(
+#     client_id=SPOTIFY_CLIENT_ID,
+#     client_secret=SPOTIFY_CLIENT_SECRET,
+#     redirect_uri="http://localhost:5000",
+#     scope="user-read-email playlist-read-private playlist-read-collaborative",
+#     cache_handler=CacheSessionHandler(session, "spotify_token"),
+# )
+
+@app.route("/")
+def homepage():
+    jinja_env = {}
+
+    if request.args.get("code") or oauth_manager.validate_token(
+        oauth_manager.get_cached_token()
+    ):
+        oauth_manager.get_access_token(request.args.get("code"))
+        return redirect("/spotify-info")
+
+    return render_template(
+        "index.html", spotify_auth_url=oauth_manager.get_authorize_url()
+    )
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+        
+
+def saved_tracks():
+
+    scope="user-library-read"
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=db_user,
+                                                client_secret=db_secret,
+                                                redirect_uri=redirect_uri,
+                                                scope=scope))
+
+    results = sp.current_user_saved_tracks()
+    for idx, item in enumerate(results['items']):
+        track = item['track']
+        print(idx, track['artists'][0]['name'], " – ", track['name'])
+
+def show_playlists():
+    scope = "playlist-read-private"
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=db_user,
+                                                   client_secret=db_secret,
+                                                   redirect_uri=redirect_uri,
+                                                   scope=scope))
+    results = sp.current_user_playlists(limit=50)
+    for i, item in enumerate(results['items']):
+        print("%d %s" % (i, item['name']))
+        
+def show_top_artists():
+    scope = 'user-top-read'
+    ranges = ['short_term', 'medium_term', 'long_term']
+
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=db_user,
+                                                   client_secret=db_secret,
+                                                   redirect_uri=redirect_uri,
+                                                   scope=scope))
+
+    for sp_range in ['short_term', 'medium_term', 'long_term']:
+        print("range:", sp_range)
+
+        results = sp.current_user_top_artists(time_range=sp_range, limit=50)
+
+        for i, item in enumerate(results['items']):
+            print(i, item['name'])
+        print()
+        
+def show_top_tracks():
+    scope = 'user-library-read'
+    def show_tracks(results):
+        for item in results['items']:
+            track = item['track']
+            print("%32.32s %s" % (track['artists'][0]['name'], track['name']))
+
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=db_user,
+                                                   client_secret=db_secret,
+                                                   redirect_uri=redirect_uri,
+                                                   scope=scope))
+
+    results = sp.current_user_saved_tracks()
+    show_tracks(results)
+
+    while results['next']:
+        results = sp.next(results)
+        show_tracks(results)
+        
