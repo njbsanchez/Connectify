@@ -5,14 +5,44 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width">
+        
+        <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>   
+        <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+        <script crossorigin src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.js"></script>
+        <script>
+        $('#location-button').click(function(){
+
+          if(navigator.geolocation)
+              navigator.geolocation.getCurrentPosition(function(position){
+                console.log(position);
+              });
+          else
+            console.log("geolocation is not supported")
+  
+        });
+        </script>
+
         <title>
             {% block title%}{% endblock %}
         </title>
+
+        
         
         {% block head %}{% endblock %}
     </head>
 
     <body>
+
+        <h2>Navigation</h2>
+        <ul>
+          <li><a href="/home">Home</a></li>
+          <li><a href="/profile">Profile</a></li>
+          <li><a href="/connect">Connect with Local Music Heads</a></li>
+          <li><a href="/coming_soon">Events in your Area</a></li>
+          <li><a href="/logout">Log Out</a></li>
+        </ul>
+
      {% for msg in get_flashed_messages() %}
       <p class="flash-msg">
         {{ msg }}

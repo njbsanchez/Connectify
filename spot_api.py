@@ -12,7 +12,6 @@ from flask import (
 # from flask_oauth import OAuth
 from spotipy import Spotify, CacheHandler
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
-import spotipy
 from pprint import pprint
 
 SPOITFY_CLIENT_ID = os.environ.get("SPOTIFY_CLIENT_ID")
@@ -30,29 +29,12 @@ class CacheSessionHandler(CacheHandler):
         self.session[self.token_key] = token_info
         session.modified = True
 
-app = Flask(__name__)
-app.secret_key = "DEV"
 oauth_manager = SpotifyOAuth(
     client_id=SPOITFY_CLIENT_ID,
     client_secret=SPOTIFY_CLIENT_SECRET,
     redirect_uri="http://localhost:5000",
     scope="user-read-email playlist-read-private playlist-read-collaborative user-top-read",
-    cache_handler=CacheSessionHandler(session, "spotify_token"),
-)
-
-@app.route("/")         #move to main server doc
-def homepage():
-    jinja_env = {}
-
-    if request.args.get("code") or oauth_manager.validate_token(
-        oauth_manager.get_cached_token()    
-    ):
-        oauth_manager.get_access_token(request.args.get("code"))
-        return redirect("/spotify-info")
-
-    return render_template(
-        "index.html", spotify_auth_url=oauth_manager.get_authorize_url()
-    )
+    cache_handler=CacheSessionHandler(session, "spotify_token"))
 
 def get_sp_oauth(o_auth):
     
@@ -70,8 +52,6 @@ def get_spotify_info():
 
     return render_template("spotify-info.html", spotify=sp)
 
-
-
 def get_my_playlists():
     """
     From Spotify, get name, id, and put into a list called "playlists".
@@ -83,7 +63,7 @@ def get_my_playlists():
     else:
         sp_oauth = Spotify(auth_manager=oauth_manager)
     
-    sp_playlists = sp_oauth.current_user_playlists(limit=50)
+    sp_playlists = sp_oauth.current_user_playlists(limit=4)
     
     playlists = []
     
@@ -95,8 +75,6 @@ def get_my_playlists():
     
     #----create a view function----#
     
-
-
 def get_all_tracks():
     
     sp_oauth = get_sp_oauth(oauth_manager)
@@ -108,19 +86,19 @@ def get_all_tracks():
     ranges = [short_term, medium_term,long_term]
     
     for sp_range in ranges:
-        results = sp.current_user_top_tracks(time_range=sp_range, limit=50)
+        results = sp_oauth.current_user_top_tracks(time_range=sp_range, limit=50)
         for track in results['items']:
-            track_info = {track['id']: 
+            track_entry = {track['id']: 
                                     {
                                     'track_name':track['name'],
                                     'artist':track['artists'][0]['name'],
                                     'artist_id':track['artists'][0]['id'],
                                     'popularity':track['popularity'],
-                                    'album':track['album'][0]['name'],
-                                    'genres':track['genres']
+                                    # 'album':track['album'][0]['name'],
+                                    # 'genres':track['genres']
                                     }
                           }
-            sp_range.append(track_info)
+            sp_range.append(track_entry)
                 
     # for range in ranges:
     #     print("")
@@ -129,10 +107,9 @@ def get_all_tracks():
     #     print("")
     #     for track in range:
     #         print(track)
-    #         # print(track['name'], '//', track['artists'][0]['name'], '//',  track['artists'][0]['uri'])
+    #         print(track['name'], '//', track['artists'][0]['name'], '//',  track['artists'][0]['uri'])
 
     return ranges
-
 
 def get_all_artists():
     
@@ -145,7 +122,7 @@ def get_all_artists():
     ranges = [short_term, medium_term,long_term]
     
     for sp_range in ranges:
-        results = sp.current_user_top_artists(time_range=sp_range, limit=50)
+        results = sp_oauth.current_user_top_artists(time_range=sp_range, limit=50)
         for artist in results['items']:
             artist_info = {artist['id']: 
                                     {
@@ -156,32 +133,14 @@ def get_all_artists():
                                     }
                           }
             sp_range.append(artist_info)
-            
+   
+    for range in ranges:
+        print("")
+        print("")
+        print("********** Next Section *************")
+        print("")
+    for artist in range:
+        print(artist)
+
     return ranges
 
-    # for range in ranges:
-    #     print("")
-    #     print("")
-    #     print("********** Next Section *************")
-    #     print("")
-    #     for artist in range:
-    #         print(artist)
-    #         # print(track['name'], '//', track['artists'][0]['name'], '//',  track['artists'][0]['uri'])
-
-@app.route("/profile")
-def show_profilegit():
-    
-    track_ranges = get_all_tracks()
-    artist_ranges = get_all_artists()
-    
-    return render_template("tracks.html", short_term=short_term)
-    return render_template("artist.html", short_term=short_term)
-
-@app.route("/playlist")
-def edit_top_playlists():
-    sp_oauth = get_sp_oauth(oauth_manager)
-    user_playlists = get_my_playlists()
-    return render_template("play.html", spotify=sp_oauth, playlists=user_playlists)
-
-if __name__ == "__main__":
-    app.run(debug=True, use_reloader=True, use_debugger=True)

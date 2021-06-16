@@ -2,14 +2,30 @@
 {%block title %}Starting Page{% endblock %}
 
 {% block body %}
-  <h1>Welcome Back!</h1>
-  
-  <h2>Navigation</h2>
-  <ul>
-    <li><a href="/profile">See Profile</a></li>
-    <li><a href="/coming_soon">See Other Users in your Area</a></li>
-    <li><a href="/coming_soon">Events in your Area</a></li>
-    <li><a href="/coming_soon">Log Out</a></li>
-  </ul>
+  <script>
+      if ('geolocation' in navigator) {
+        console.log('geolocation available');
+        navigator.geolocation.getCurrentPosition(position => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          document.getElementById('latitude').textContent = lat;
+          document.getElementById('longitude').textContent = lon;
+
+          const data =  { lat, lon };
+          const options = {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json",
+            },
+          };
+        });
+      } else {
+        console.log('geolocation is not supported')
+        };
+  </script>
+  <p> 
+    latitude: <span id= "latitude"></span><br />
+    longitude: <span id= "longitude"></span>
+  </p>
 
 {% endblock %}

@@ -1,16 +1,52 @@
-{%extends 'base.html'%}
+{% extends 'base.html' %}
 
-{% block title %}My Trackify Profile{% endblock %}
+{% block title %}{{ spotify.current_user }}My Details {% endblock %}
 
 {% block body %}
-<dl>
+
+<h2> </h2>
+
+<document.getElementById>
+  
+
   {% for key, val in spotify.current_user().items() %}
-    <dt>{{ key }}</dt>
-    <dd>
-      <pre>
-        {{ val }}
-      </pre>
-    </dd>
+    <dt>{{ key }} :::: {{ val }}</dt>
   {% endfor %}
+  <dt> ----------- :::: --------- </dt>
+  <dt> ----------- :::: --------- </dt>
+  <dt> ----------- :::: --------- </dt>
+</dl>
+
+
+<dl>
+  {% for range in track_ranges %}
+      <tr>
+          {% for track in range %}
+              <tr>
+                  {% for key, values in track.items() %}
+                      <dt>{{ key }} </dt>
+                      <dt>{{ values }} </dt>
+                  {% endfor %}
+              </tr>
+          {% endfor %}
+        </tr>
+  {% endfor %}
+ <dt> ----------- :::: --------- </dt>
+  <dt> ----------- :::: --------- </dt>
+  <dt> ----------- :::: --------- </dt>
+
+  {% for range in artist_ranges %}
+      <tr>
+          {% for artist in range %}
+              <tr>
+                  {% for key, values in artist.items() %}
+                      <dt>{{ key }} </dt>
+                      <dt>{{ values }} </dt>
+                  {% endfor %}
+              </tr>
+          {% endfor %}
+        </tr>
+  {% endfor %}     
 </dl>
 {% endblock body %}
+

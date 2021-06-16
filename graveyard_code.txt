@@ -212,3 +212,25 @@ def show_top_tracks():
         results = sp.next(results)
         show_tracks(results)
         
+
+
+
+-------------------
+profile
+
+{%extends 'base.html'%}
+
+{% block title %}My Trackify Profile{% endblock %}
+
+{% block body %}
+<dl>
+  {% for key, val in spotify.current_user().items() %}
+    <dt>{{ key }}</dt>
+    <dd>
+      <pre>
+        {{ val }}
+      </pre>
+    </dd>
+  {% endfor %}
+</dl>
+{% endblock body %}
