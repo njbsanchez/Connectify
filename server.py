@@ -30,6 +30,8 @@ class CacheSessionHandler(CacheHandler):
         self.session = session
 
     def get_cached_token(self):
+        print("calling get_cached_token *******************************")
+        print(self.session)
         return self.session.get(self.token_key)
 
     def save_token_to_cache(self, token_info):
@@ -42,7 +44,7 @@ app.jinja_env.undefined = StrictUndefined
 oauth_manager = SpotifyOAuth(
     client_id=SPOITFY_CLIENT_ID,
     client_secret=SPOTIFY_CLIENT_SECRET,
-    redirect_uri="http://localhost:5000",
+    redirect_uri="http://localhost:5000/auth",
     scope="user-read-email playlist-read-private playlist-read-collaborative user-top-read",
     cache_handler=CacheSessionHandler(session, "spotify_token"))
 
@@ -99,8 +101,7 @@ def authenticate():
     jinja_env = {}
 
     if request.args.get("code") or oauth_manager.validate_token(
-        oauth_manager.get_cached_token()    
-    ):
+        oauth_manager.get_cached_token()):
         oauth_manager.get_access_token(request.args.get("code"))
         flash("Account created! Please log in.")
         return redirect("/home")
@@ -115,16 +116,19 @@ def show_profile():
     # if session["user_id"] is None:
     #     flash("Please sign in to access your profile."
     # return redirect ("/")
+    # trackify_user = session["user_id"]
+    if not oauth_manager.validate_token(oauth_manager.get_cached_token()):
+            return redirect("/auth")
+    else:
+        sp_oauth = Spotify(auth_manager=oauth_manager)
+       
+    sp_user_info = sp.get_spotify_info
+
+    tracks = sp.get_all_tracks()
+    artists = sp.get_my_artists()
+    # playlists =  sp.get_my_playlists()
     
-    trackify_user = session["user_id"]
-        
-    sp_oauth = sp.get_sp_oauth(oauth_manager)
-    
-    track_ranges = sp.get_all_tracks()
-    artist_ranges = sp.get_all_artists()
-    playlists =  sp.get_my_playlists()
-    
-    return render_template("profile.html", spotify=sp_oauth, artist_ranges=artist_ranges, track_ranges=track_ranges, playlists=playlists)
+    return render_template("profile.html", sp_user_info=sp_user_info, artists=artists, tracks=tracks)
 
 @app.route("/edit_top_playlists")
 def edit_top_playlists():
@@ -192,4 +196,3 @@ def update_user_location():
 if __name__ == "__main__":
     app.run(debug=True, use_reloader=True, use_debugger=True)
     model.db.create_all()
-    

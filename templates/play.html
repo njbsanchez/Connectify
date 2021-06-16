@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<dl>
+  {% for playlist in playlists %}
+    <dt>{{ item }}</dt>
+    <dd>
+      <pre>
+        {{ value }}
+      </pre>
+    </dd>
+  {% endfor %}
+</dl>
+{% endblock body %}

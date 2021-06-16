@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{%block title %}Starting Page{% endblock %}
+
+{% block body %}
+
+<div id="wrapper">
+    <button id="location-button">Get User Location</button>
+</div>
+
+  <script>
+      if ('geolocation' in navigator) {
+        console.log('geolocation available');
+
+        navigator.geolocation.getCurrentPosition((position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+
+          console.log(`Got user's location: ${lat}, ${lon}`);
+          
+          $.post('/api/user/location', { lat: lat, long: lon }, (res) => {
+            console.log('Saved to DB:');
+            console.log(res);
+
+          });
+        });
+      } else {
+        console.log('geolocation is not supported')
+      }
+  </script>
+
+
+{% endblock %}

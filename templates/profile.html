@@ -1,52 +1,46 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ spotify.current_user }}My Details {% endblock %}
+{% block title %} My Details {% endblock %}
 
 {% block body %}
 
 <h2> </h2>
 
 <document.getElementById>
-  
 
-  {% for key, val in spotify.current_user().items() %}
+<h1>User Details</h1>  
+
+  {% for key, val in sp_user_info().items() %}
     <dt>{{ key }} :::: {{ val }}</dt>
   {% endfor %}
+  <dt>  </dt>
   <dt> ----------- :::: --------- </dt>
-  <dt> ----------- :::: --------- </dt>
-  <dt> ----------- :::: --------- </dt>
-</dl>
+  <dt>  </dt>
 
 
-<dl>
-  {% for range in track_ranges %}
-      <tr>
-          {% for track in range %}
-              <tr>
-                  {% for key, values in track.items() %}
-                      <dt>{{ key }} </dt>
-                      <dt>{{ values }} </dt>
-                  {% endfor %}
-              </tr>
-          {% endfor %}
-        </tr>
-  {% endfor %}
- <dt> ----------- :::: --------- </dt>
-  <dt> ----------- :::: --------- </dt>
-  <dt> ----------- :::: --------- </dt>
+ <h1>Top Tracks</h1>
 
-  {% for range in artist_ranges %}
-      <tr>
-          {% for artist in range %}
-              <tr>
-                  {% for key, values in artist.items() %}
-                      <dt>{{ key }} </dt>
-                      <dt>{{ values }} </dt>
-                  {% endfor %}
-              </tr>
-          {% endfor %}
-        </tr>
-  {% endfor %}     
-</dl>
+  <ul>
+    {% for track in tracks %}
+      <li>
+        <a href="/tracks/{{ track.sp_track_id }}">
+          {{ track.track_name }}
+        </a>
+      </li>
+    {% endfor %}
+    
+  </ul>
+
+ <h1>Top Artists</h1>
+
+  <ul>
+    {% for artist in artists %}
+      <li>
+        <a href="/artists/{{ artist.sp_artist_id }}">
+          {{ artist.artist_name }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+
 {% endblock body %}
-

@@ -1,5 +1,42 @@
 profile info-------------
 
+
+<dl>
+  {% for range in track_ranges %}
+      <tr>
+          {% for track in range %}
+              <tr>
+                  {% for key, values in track.items() %}
+                      <dt>{{ key }} </dt>
+                      <dt>{{ values }} </dt>
+                  {% endfor %}
+              </tr>
+          {% endfor %}
+        </tr>
+  {% endfor %}
+ <dt> ----------- :::: --------- </dt>
+  <dt> ----------- :::: --------- </dt>
+  <dt> ----------- :::: --------- </dt>
+
+  {% for range in artist_ranges %}
+      <tr>
+          {% for artist in range %}
+              <tr>
+                  {% for key, values in artist.items() %}
+                      <dt>{{ key }} </dt>
+                      <dt>{{ values }} </dt>
+                  {% endfor %}
+              </tr>
+          {% endfor %}
+        </tr>
+  {% endfor %}     
+</dl>
+{% endblock body %}
+
+
+
+_-_____________
+
 {% comment %} <div class="container">
     <h1>Displaying User Data</h1>
     <p>Log in with your Spotify account and this demo will display information about you fetched using the Spotify Web API</p>
