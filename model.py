@@ -4,6 +4,16 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+def connect_to_db(flask_app, db_uri='postgresql:///trackify', echo=False):       #postgresql
+    flask_app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
+    flask_app.config['SQLALCHEMY_ECHO'] = echo
+    flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    db.app = flask_app
+    db.init_app(flask_app)
+
+    print('Connected to the db!')
+
 class User(db.Model):
     """A user."""
     
@@ -12,12 +22,16 @@ class User(db.Model):
     user_id = db.Column(db.Integer,
                         autoincrement=True, 
                         primary_key=True)
+    name = db.Column(db.String, 
+                      nullable=False)
     email = db.Column(db.String, 
                       nullable=False, 
                       unique=True)
-    sp_user_id = db.Column(db.String, 
-                             nullable=False, 
-                             unique=True)
+    password = db.Column(db.String, 
+                      nullable=False)
+    s_id = db.Column(db.String,
+                     nullable=False,
+                     unique=True)
     latitude = db.Column(db.Float, 
                          nullable=True)
     longitude = db.Column(db.Float, 
@@ -29,6 +43,8 @@ class User(db.Model):
     
 class Track(db.Model):
     """Top 50 tracks (long term)"""
+    
+    __tablename__ = "tracks"
     
     track_id = db.Column(db.Integer,
                         autoincrement=True,
@@ -54,6 +70,8 @@ class Track(db.Model):
 class Artist(db.Model):
     """An Artist."""
     
+    __tablename__ = "artists"
+    
     artist_id = db.Column(db.Integer,
                         autoincrement=True,
                         primary_key=True)
@@ -74,6 +92,9 @@ class Artist(db.Model):
 class Playlist(db.Model):
     """A playlist."""
     
+    
+    __tablename__ = "playlists"
+    
     playlist_id = db.Column(db.Integer, 
                             autoincrement=True, 
                             primary_key=True)
@@ -91,15 +112,7 @@ class Playlist(db.Model):
     def __repr__(self):
         return f'< playlist_id = {self.playlist_id} playlist_name = {self.playlist_name} >'
 
-def connect_to_db(flask_app, db_uri='postgresql:///trackify', echo=False):       #postgresql
-    flask_app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
-    flask_app.config['SQLALCHEMY_ECHO'] = echo
-    flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    db.app = flask_app
-    db.init_app(flask_app)
-
-    print('Connected to the db!')
 
 if __name__ == '__main__':
     from server import app

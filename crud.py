@@ -1,10 +1,10 @@
 """CRUD operations."""
 from model import db, User, connect_to_db, Playlist, Track, Artist
 
-def create_user(email, password, name, spot_user_id, latitude=00000, longitude=00000, played_at="none"):
+def create_user(email, password, name, s_id, latitude=00000, longitude=00000, recent_activity="none"):
     """Create and return a new user."""
 
-    user = User(email=email, password=password, name=name, spot_user_id=spot_user_id)
+    user = User(email=email, password=password, name=name, s_id=s_id, latitude=latitude, longitude=longitude, recent_activity=recent_activity)
 
     db.session.add(user)
     db.session.commit()
@@ -33,10 +33,10 @@ def get_user_by_email(email):
     
     return User.query.filter(User.email == email).first()
 
-def get_user_by_spot(spot_user_id):
+def get_user_by_spot(s_id):
     """Return a user by email."""
 
-    return User.query.filter(User.spot_user_id == spot_user_id).first()
+    return User.query.filter(User.s_id == s_id).first()
 
 def get_users():
     """Return all users."""

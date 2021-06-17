@@ -271,3 +271,85 @@ profile
   {% endfor %}
 </dl>
 {% endblock body %}
+
+
+CONNECT
+
+
+<div id="wrapper">
+    <button id="location-button">Get User Location</button>
+</div>
+
+  <script>
+      if ('geolocation' in navigator) {
+        console.log('geolocation available');
+
+        navigator.geolocation.getCurrentPosition((position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+
+          console.log(`Got user's location: ${lat}, ${lon}`);
+          
+          $.post('/api/user/location', { lat: lat, long: lon }, (res) => {
+            console.log('Saved to DB:');
+            console.log(res);
+
+          });
+        });
+      } else {
+        console.log('geolocation is not supported')
+      }
+  </script>
+
+
+
+
+GET USER INFO FOR map
+
+
+   $.get('/api/usersinfo', (users_json) => {
+    for (const user of users_json) {
+      const userInfoContent = (`
+        <div class="window-content">
+          <div class="user-thumbnail">
+            <img
+              src="/static/img/user_icon.jpg"
+              alt="groovy_user"
+            />
+          </div>
+
+          <ul class="user-info">
+            <li><b>Listener Name: </b>${user.name}</li>
+            <li><b>Listener Spotify ID: </b>${user.s_id}</li>
+            <li><b>Recent Activity </b>${user.recent_activity}</li>
+            <li><b>Trackify Profile: TBD </b></li>
+          </ul>
+        </div>
+      `);
+
+      const userMarker = new google.maps.Marker({
+        position: {
+          lat: user.latitude,
+          lng: user.longitude
+        },
+        title: `Trackify User: ${user.name}`,
+        icon: {
+          url: '/static/img/user_icon.svg',
+          scaledSize: new google.maps.Size(50, 50)
+        },
+        map: map,
+      });
+
+      userMarker.addListener('click', () => {
+        userInfo.close();
+        userInfo.setContent(userInfoContent);
+        userInfo.open(map, userMarker);
+      });
+    }
+  }).fail(() => {
+    alert((`
+      An unexpected error occurred! Check back later for updates.
+    `));
+  });
+}
+
