@@ -1,8 +1,26 @@
-{%block title %}Connectify{% endblock %}
+
+{%block title %}Connect{% endblock %}
+
 
 {% block head %}
-  <link rel="stylesheet" href="/static/css/maps.css">
+
+
+ <h2>Navigation</h2>
+        <ul>
+          <li><a href="/home">Home</a></li>
+          <li><a href="/profile">Profile</a></li>
+          <li><a href="/connect">Connect with Local Music Heads</a></li>
+          <li><a href="/coming_soon">Events in your Area</a></li>
+          <li><a href="/logout">Log Out</a></li>
+        </ul>
   
+
+  <link rel="stylesheet" href="/static/css/maps.css">
+  <link rel="stylesheet" href="/static/css/users.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="/static/js/mapStyles.js"></script>
+  <script src="/static/js/connect.js"></script>
   <script
     async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBZz8jsm-G3NivDaxa8PwlDRfZhIyJ4Q8&callback=initMap">
@@ -10,12 +28,11 @@
 {% endblock %}
 
 {% block body %}
-  
+
   <main>
     <section class="map">
       <div id="map"></div>
     </section>
   </main>
 
-  <script src="/static/js/connect.js"></script>
 {% endblock %}

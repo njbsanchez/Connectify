@@ -24,7 +24,14 @@
         </script>
 
         <title>
-            {% block title%}{% endblock %}
+            
+            {% block title%}
+              {% for msg in get_flashed_messages() %}
+                <p class="flash-msg">
+                {{ msg }}
+                 </p>
+              {% endfor %}
+            {% endblock %}
         </title>
 
         
@@ -43,11 +50,7 @@
           <li><a href="/logout">Log Out</a></li>
         </ul>
 
-     {% for msg in get_flashed_messages() %}
-      <p class="flash-msg">
-        {{ msg }}
-      </p>
-    {% endfor %}
+    
 
     {% block body %} {% endblock %}
     

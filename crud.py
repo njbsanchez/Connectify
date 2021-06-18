@@ -1,10 +1,10 @@
 """CRUD operations."""
 from model import db, User, connect_to_db, Playlist, Track, Artist
 
-def create_user(email, password, name, s_id, latitude=00000, longitude=00000, recent_activity="none"):
+def create_user(email, password, name, s_id):
     """Create and return a new user."""
 
-    user = User(email=email, password=password, name=name, s_id=s_id, latitude=latitude, longitude=longitude, recent_activity=recent_activity)
+    user = User(email=email, password=password, name=name, s_id=s_id)
 
     db.session.add(user)
     db.session.commit()

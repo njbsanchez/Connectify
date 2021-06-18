@@ -18,6 +18,22 @@
   <dt>  </dt>
 
 
+  <h1>Playlists</h1>
+
+  <ul>
+    {% for playlist in playlists %}
+      <li>
+        <a href="/playlists/{{ playlist.play_url }}">
+          {{ playlist.playlist_name }}
+          {{ playlist.playlist_desc }}
+        </a>
+      </li>
+    {% endfor %}
+    
+  </ul>
+
+
+
  <h1>Top Tracks</h1>
 
   <ul>

@@ -1,14 +1,21 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<dl>
-  {% for playlist in playlists %}
-    <dt>{{ item }}</dt>
-    <dd>
-      <pre>
-        {{ value }}
-      </pre>
-    </dd>
-  {% endfor %}
-</dl>
+
+  <h1>Playlists</h1>
+
+  <ul>
+    {% for playlist in playlists %}
+      <li>
+        <a href="/playlists/{{ playlist.play_url }}">
+          {{ playlist.playlist_name }}
+          {{ playlist.playlist_desc }}
+        </a>
+      </li>
+    {% endfor %}
+    
+  </ul>
+
+
 {% endblock body %}
+

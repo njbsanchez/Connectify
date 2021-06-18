@@ -29,13 +29,9 @@ class User(db.Model):
                       unique=True)
     password = db.Column(db.String, 
                       nullable=False)
-    s_id = db.Column(db.String,
-                     nullable=False,
-                     unique=True)
-    latitude = db.Column(db.Float, 
-                         nullable=True)
-    longitude = db.Column(db.Float, 
-                          nullable=True)
+    s_id = db.Column(db.String)
+    latitude = db.Column(db.String)
+    longitude = db.Column(db.String)
     recent_activity = db.Column(db.DateTime)
       
     def __repr__(self):

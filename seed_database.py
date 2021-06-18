@@ -37,7 +37,7 @@ def get_dummies():
         )
         last_played = datetime.strptime(user["played_at"], "%Y-%m-%dT%H:%M:%S.%f%z")
 
-        db_user = crud.create_user(email, password, name, s_id, lat, long, recent_activity, last_played)
+        db_user = crud.create_user(email, password, name, s_id, lat, long, recent_activity,)
         dummies_in_db.append(db_user)
 
     model.db.session.commit()

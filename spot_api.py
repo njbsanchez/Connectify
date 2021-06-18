@@ -9,6 +9,7 @@ from flask import (
     url_for,
     flash,
 )
+import server
 import json
 # from flask_oauth import OAuth
 from spotipy import Spotify, CacheHandler
@@ -67,24 +68,51 @@ def get_my_playlists():
     From Spotify, get name, id, and put into a list called "playlists".
     To be used for "edit my top playlist" page
     """
+    sp_oauth = get_sp_oauth(oauth_manager)
+    
+    sp_playlists = sp_oauth.current_user_playlists(limit=5)
    
-    if not oauth_manager.validate_token(oauth_manager.get_cached_token()):
-            return redirect("/")
-    else:
-        sp_oauth = Spotify(auth_manager=oauth_manager)
-    
-    sp_playlists = sp_oauth.current_user_playlists(limit=10)
-    
     playlists = []
     
-    for i, item in enumerate(sp_playlists['items']):                                          
-        print("%d ---- %s %s %s" % (i, item['name'], item['id'], item['tracks']))
-        playlists.append( {(i, item['name']): [item['id'],item['tracks']]})  
+    for playlist in sp_playlists['items']:
+        playlist_entry = {'sp_playlist_id':playlist['id'],
+                        'playlist_name':playlist['name'],
+                       'playlist_desc':playlist['description'],
+                       'owner_id':playlist['owner']['id'],
+                       'play_url':playlist['external_urls']['spotify'],
+                    #    'href':playlist['external_urls']['href']
+                        }
+        playlists.append(playlist_entry)
+        
+    # with open('data/playlists.json','w') as outfile:
+    #     json.dump(playlists, outfile)
+    # print("************ successfully uploaded playlists to json *******")
     
     return playlists
     
     #----create a view function----#
+
+def update_track_db():
+    """to update tracks in user's database"""
     
+    tracks_in_db = []
+    tracks = get_my_playlists()
+    user_id = session['user_id']
+    
+    for track in tracks:
+        sp_track_id, track_name, artist, artist_id, popularity, genres = (
+            track["sp_track_id"],
+            track["track_name"],
+            track["artist"],
+            track["artist_id"],
+            track["popularity"],
+            # track["genre"],
+        )
+        
+        db_track = crud.add_track(sp_track_id, track_name, artist, artist_id, popularity, genres, user_id)
+        tracks_in_db.append(db_track)
+                                           
+
 def get_all_tracks():
     
     sp_oauth = get_sp_oauth(oauth_manager)

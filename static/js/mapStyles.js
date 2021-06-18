@@ -16,7 +16,7 @@ const MAPSTYLES = [
                 "visibility": "simplified"
             },
             {
-                "color": "#cccccc"
+                "color": "#A0BFDB"
             }
         ]
     },
@@ -25,10 +25,7 @@ const MAPSTYLES = [
         "elementType": "labels.icon",
         "stylers": [
             {
-                "visibility": "simplified"
-            },
-            {
-                "color": "#FFFFFF"
+                "visibility": "off"
             }
         ]
     },
@@ -36,7 +33,7 @@ const MAPSTYLES = [
         "elementType": "labels.text.fill",
         "stylers": [
             {
-                "color": "#808080"
+                "visibility": "off"
             }
         ]
     },
@@ -53,7 +50,7 @@ const MAPSTYLES = [
         "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#241108"
+                "visibility": "OFF"
             }
         ]
     },
@@ -62,7 +59,7 @@ const MAPSTYLES = [
         "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#04162b"
+                "visibility": "OFF"
             }
         ]
     },
@@ -70,9 +67,6 @@ const MAPSTYLES = [
         "featureType": "administrative",
         "elementType": "labels.text.stroke",
         "stylers": [
-            {
-                "color": "#808080"
-            },
             {
                 "visibility": "off"
             }
@@ -82,7 +76,7 @@ const MAPSTYLES = [
         "featureType": "landscape.man_made",
         "stylers": [
             {
-                "color": "#04162b"
+                "visibility": "OFF"
             }
         ]
     },
@@ -90,7 +84,7 @@ const MAPSTYLES = [
         "featureType": "poi.business",
         "stylers": [
             {
-                "color": "#04162b"
+                "visibility": "OFF"
             }
         ]
     },
@@ -98,7 +92,7 @@ const MAPSTYLES = [
         "featureType": "poi.attraction",
         "stylers": [
             {
-                "color": "#04162b"
+                "visibility": "OFF"
             }
         ]
     },
@@ -106,7 +100,7 @@ const MAPSTYLES = [
         "featureType": "landscape",
         "stylers": [
             {
-                "color": "#04162b"
+                "visibility": "OFF"
             }
         ]
     },
@@ -114,7 +108,7 @@ const MAPSTYLES = [
         "featureType": "poi",
         "stylers": [
             {
-                "color": "#04162b"
+                "visibility": "OFF"
             }
         ]
     },
@@ -122,11 +116,9 @@ const MAPSTYLES = [
         "featureType": "administrative.province",
         "stylers": [
             {
-                "visibility": "on"
-            },
-            {
-                "color": "#282828"
+                "visibility": "OFF"
             }
+            
         ]
     },
     {
@@ -154,7 +146,7 @@ const MAPSTYLES = [
         "elementType": "geometry.stroke",
         "stylers": [
             {
-                "color": "#0a4e6f"
+                "visibility": "off"
             }
         ]
     },
@@ -162,7 +154,7 @@ const MAPSTYLES = [
         "featureType": "administrative.country",
         "stylers": [
             {
-                "color": "#0a4e6f"
+                "visibility": "off"
             }
         ]
     },
