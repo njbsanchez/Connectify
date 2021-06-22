@@ -5,12 +5,19 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 def connect_to_db(flask_app, db_uri='postgresql:///trackify', echo=False):       #postgresql
+ 
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
     flask_app.config['SQLALCHEMY_ECHO'] = echo
     flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    db.app = flask_app
+    # db.app = flask_app
+  
     db.init_app(flask_app)
+    
+    with flask_app.app_context():
+        # Extensions like Flask-SQLAlchemy now know what the "current" app
+        # is while within this block. Therefore, you can now run........
+        db.create_all()
 
     print('Connected to the db!')
 
@@ -29,9 +36,10 @@ class User(db.Model):
                       unique=True)
     password = db.Column(db.String, 
                       nullable=False)
-    s_id = db.Column(db.String)
-    latitude = db.Column(db.String)
-    longitude = db.Column(db.String)
+    s_id = db.Column(db.String,
+                     nullable=False)
+    latitude = db.Column(db.Float)
+    longitude = db.Column(db.Float)
     recent_activity = db.Column(db.DateTime)
       
     def __repr__(self):
@@ -45,23 +53,22 @@ class Track(db.Model):
     track_id = db.Column(db.Integer,
                         autoincrement=True,
                         primary_key=True)
+    track_name = db.Column(db.String,
+                          nullable=False)
     sp_track_id = db.Column(db.String,
                           nullable=False)
-    track_name = db.Column(db.String,
+    artist_name = db.Column(db.String,
                           nullable=False)
     artist_id = db.Column(db.String,
                           nullable=False)
-    popularity = db.Column(db.String,
-                           nullable=False)
-    genre = db.Column(db.String,
-                      nullable=False)
     user_id = db.Column(db.ForeignKey('users.user_id'),
-                              nullable=True)
+                              nullable=False)
+
     
     track = db.relationship('User', backref='tracks')
     
     def __repr__(self):
-        return f'< song_id = {self.track_id} song_name = {self.track_name} >'
+        return f'< track_id = {self.track_id} track_name = {self.track_name} >'
     
 class Artist(db.Model):
     """An Artist."""
@@ -77,7 +84,7 @@ class Artist(db.Model):
                           nullable=False)
     user_id = db.Column(db.ForeignKey('users.user_id'),
                               nullable=True)
-
+     
     artist = db.relationship('User', backref='artists')
 
     #functions here
@@ -94,14 +101,17 @@ class Playlist(db.Model):
     playlist_id = db.Column(db.Integer, 
                             autoincrement=True, 
                             primary_key=True)
-    sp_playlist_id = db.Column(db.Integer, 
+    sp_playlist_id = db.Column(db.String, 
                               nullable=False)
-    sp_user_id = db.Column(db.String, 
+    s_id = db.Column(db.String, 
                              nullable=False)
     playlist_name = db.Column(db.String, 
                               nullable=False)
     user_id = db.Column(db.ForeignKey('users.user_id'),
                               nullable=True)
+    play_desc = db.Column(db.String)
+    play_url = db.Column(db.String, 
+                              nullable=False)
     
     playlist = db.relationship('User', backref='playlists')
 

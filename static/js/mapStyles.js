@@ -4,7 +4,7 @@ const MAPSTYLES = [
         "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#A0BFDB"
+                "color": "#EC9706"
             }
         ]
     },
@@ -13,10 +13,10 @@ const MAPSTYLES = [
         "elementType": "labels.text.fill",
         "stylers": [
             {
-                "visibility": "simplified"
+                "visibility": "off"
             },
             {
-                "color": "#A0BFDB"
+                "color": "off"
             }
         ]
     },

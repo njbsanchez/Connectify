@@ -1,25 +1,23 @@
 "use strict";
 
-const $ = document.querySelector
-
 function initMap() {
-  const basicMap = new google.maps.Map(document.querySelector('#map'), {
+  const map = new google.maps.Map($('#map')[0], {
     center: {
-      lat: 37,
-      lng: -122
+      lat: 37.5873838,
+      lng: -122.3538637
     },
-    scrollwheel: false,
+    scrollwheel: true,
     zoomControl: true,
     panControl: false,
     streetViewControl: false,
-    styles: MAPSTYLES,
-    zoom: 5,
-    mapTypeId: google.maps.MapTypeId.TERRAIN
+    zoom: 10,
+    mapTypeId: google.maps.MapTypeId.NONE
   });
   
   const userInfo = new google.maps.InfoWindow();
 
-  $('/api/usersinfo', (users) => {
+  $.get('/api/usersinfo', (users) => {
+    console.log(users);
     for (const user of users) {        //defines content of the infowindow
       const userInfoContent = (`
         <div class="window-content">
@@ -35,31 +33,33 @@ function initMap() {
             <li><b>Listener Spotify ID: </b>${user.s_id}</li>
             <li><b>Recent Activity </b>${user.recent_activity}</li>
             <li><b>Location: </b>${user.latitude}, ${user.longitude}</li>
+            <li><b>Link to Profile: </b> <a href="/users/${user.user_id}">Link to Profile</a></li>
           </ul>
         </div>
       `);
 
-      // const userMarker = new google.maps.Marker({
-      //   position: {
-      //     lat: user.latitude,
-      //     lng: user.longitude,
-      //   },
-      //   title: `Listener Name: ${user.name}`,
-      //   icon: {
-      //     url: '/static/img/user_icon.svg',
-      //     scaledSize: new google.maps.Size(50, 50)
-      //   },
-      //   map: map,
-      // });
+      const userMarker = new google.maps.Marker({
+        position: {
+          lat: user.latitude,
+          lng: user.longitude,
+        },
+        title: `Listener Name: ${user.name}`,
 
-      // userMarker.addListener('click', () => {
-      //   userInfo.close();
-      //   userInfo.setContent(userInfoContent);
-      //   userInfo.open(map, userMarker);
-      // });
+        icon: {
+          url: '/static/img/user_icon.png',
+          scaledSize: new google.maps.Size(50, 50)
+        },
+        map: map, 
+      });
+
+      userMarker.addListener('click', () => {
+        userInfo.close();
+        userInfo.setContent(userInfoContent);
+        userInfo.open(map, userMarker);
+      });
     }
-}).fail(() => {
-    alert((`failed.
-  `));
-});
+  }).fail(() => {
+      alert((`failed.
+    `));
+  });
 }
