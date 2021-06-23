@@ -1,0 +1,71 @@
+
+{% extends 'base.html' %}
+
+{% block title %}{{ user.name }}'s Page{% endblock %}
+
+{% block body %}
+<h1>{{ user.name }}'s Page</h1>
+
+<document.getElementById>
+
+<h2>User Details</h2>  
+
+  <li> {{ user.name }} </li>
+  <li> {{ user.s_id }} </li>
+  <li> {{ user.recent_activity}} </li>
+
+<h2>Playlists</h2>  
+
+<ul>
+    {% for playlist in recent_playlists %}
+      <li> <a href="{{ playlist.play_url }}"> {{ playlist.playlist_name }} </a> -- {{ playlist.play_desc }} </li>
+    {% endfor %}
+</ul>
+
+
+<h2>Top 10 Artists</h2>  
+
+<ul>
+    {% for artist in top_artists %}
+      <li> {{ artist.artist_name }}</li>
+    {% endfor %}
+</ul>
+
+<h2>Top 10 Tracks</h2>  
+
+<ul>
+    {% for track in top_tracks %}
+      <li> {{ track.track_name }} -- {{ track.artist_name }}</li>
+    {% endfor %}
+</ul>
+
+<h2>Calculate Comparisons</h2>  
+
+<ul>
+    <h3>Similar Artists</h3>
+      {% for artist in artist_comparison.artist_similar %}
+          <li> {{ artist[0] }}</li>
+      {% endfor %}
+    <h3>{{user.name}}'s Favorite Artists You Should Check Out!</h3>
+      {% for artist in artist_comparison.new_artists_to_me %}
+          <li> {{ artist[0] }}</li>
+        {% endfor %}
+    <h3></h3>
+    <h3>- - - - - - -- </h3>
+    <h3></h3>
+    <h3>Similar Tracks</h3>
+      {% for track in track_comparison.track_similar %}
+          <li> {{ track[0] }}</li>
+      {% endfor %}
+    <h3>{{user.name}}'s Favorite Tracks You Should Check Out!</h3>
+      {% for track in track_comparison.new_tracks_to_me %}
+          <li> {{ track[0] }}</li>
+        {% endfor %}
+    <h3></h3>
+</ul>
+
+
+
+<p> <a href="/users">Back to all Users</a> </p>
+
+{% endblock %}
