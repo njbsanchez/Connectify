@@ -32,12 +32,10 @@
     
   </ul>
 
-
-
- <h1>Top Tracks</h1>
+<h1>Top Tracks</h1>
 
   <ul>
-    {% for track in tracks %}
+    {% for track in top_tracks %}
       <li>
         <a href="/tracks/{{ track.sp_track_id }}">
           {{ track.track_name }}
@@ -50,7 +48,7 @@
  <h1>Top Artists</h1>
 
   <ul>
-    {% for artist in artists %}
+    {% for artist in top_artists %}
       <li>
         <a href="/artists/{{ artist.sp_artist_id }}">
           {{ artist.artist_name }}
@@ -58,5 +56,8 @@
       </li>
     {% endfor %}
   </ul>
+
+  <p> ***************** in progress ******************</p>
+
 
 {% endblock body %}

@@ -32,7 +32,6 @@ function initMap() {
             <li><b>Listener Name: </b>${user.name}</li>
             <li><b>Listener Spotify ID: </b>${user.s_id}</li>
             <li><b>Recent Activity </b>${user.recent_activity}</li>
-            <li><b>Location: </b>${user.latitude}, ${user.longitude}</li>
             <li><b>Link to Profile: </b> <a href="/users/${user.user_id}">Link to Profile</a></li>
           </ul>
         </div>

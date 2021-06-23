@@ -10,14 +10,14 @@ def connect_to_db(flask_app, db_uri='postgresql:///trackify', echo=False):      
     flask_app.config['SQLALCHEMY_ECHO'] = echo
     flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    # db.app = flask_app
+    db.app = flask_app
   
     db.init_app(flask_app)
     
-    with flask_app.app_context():
-        # Extensions like Flask-SQLAlchemy now know what the "current" app
-        # is while within this block. Therefore, you can now run........
-        db.create_all()
+    # with flask_app.app_context():
+    #     # Extensions like Flask-SQLAlchemy now know what the "current" app
+    #     # is while within this block. Therefore, you can now run........
+    #     db.create_all()
 
     print('Connected to the db!')
 

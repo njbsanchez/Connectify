@@ -1,6 +1,6 @@
 [
 
-    {"test1": [{
+    {"1": [{
         "sp_playlist_id": "1oduDwMNSleRb5YRcLxppt",
         "playlist_name": "Dutch bbs",
         "playlist_desc": "",
@@ -20,7 +20,7 @@
         "play_url": "https://open.spotify.com/playlist/0PgHybhvxJAt6VFrQUV9Rp"
     }]},
 
-    {"test2": [{
+    {"2": [{
         "sp_playlist_id": "2gyJmxoCDyXLHwHcr3Wjtc",
         "playlist_name": "brainmelt",
         "playlist_desc": "For those days when you need to melt your brain. Especially the sad days.",
@@ -40,7 +40,7 @@
         "play_url": "https://open.spotify.com/playlist/7ccjZzeCG3sQW44qZTaXx7"
     }]},
 
-    {"test3": [{
+    {"3": [{
         "sp_playlist_id": "5w6mfTXHXCpR0v38qv93Hv",
         "playlist_name": "Feel Better Bub <3",
         "playlist_desc": "For when bub feels blue.",
@@ -60,7 +60,7 @@
         "play_url": "https://open.spotify.com/playlist/1Tih20xpdtZS5siXmgiSCI"
     }]},
 
-    {"test4": [{
+    {"4": [{
         "sp_playlist_id": "37i9dQZF1EM9R5vB7Zobxn",
         "playlist_name": "Your Top Songs 2020",
         "playlist_desc": "The songs you loved most this year, all wrapped up.",
@@ -80,7 +80,7 @@
         "play_url": "https://open.spotify.com/playlist/37i9dQZF1EJ92jhLtxXrDs"
     }]},
 
-    {"test5": [{
+    {"5": [{
         "sp_playlist_id": "0agHiTtP35BvkVW9NoP0DQ",
         "playlist_name": "Happiness Runs in a Circular Motion",
         "playlist_desc": "",
@@ -100,7 +100,7 @@
         "play_url": "https://open.spotify.com/playlist/37i9dQZF1DWWBHeXOYZf74"
     }]},
 
-    {"test6": [{
+    {"6": [{
         "sp_playlist_id": "5DqFd9iKMCOcoQH3XJFSmq",
         "playlist_name": "All for love Playlist",
         "playlist_desc": "",
@@ -120,7 +120,7 @@
         "play_url": "https://open.spotify.com/playlist/1gsO4zyL8pAsCC5EnCHrWP"
     }]},
 
-    {"test7": [{
+    {"7": [{
         "sp_playlist_id": "0DFeuTaUbw3qYEt9k4qAVs",
         "playlist_name": "Describe feeling?",
         "playlist_desc": "",
@@ -140,7 +140,7 @@
         "play_url": "https://open.spotify.com/playlist/13mmYRK1DPTY5IBjzxfEeQ"
     }]},
 
-    {"test8": [{
+    {"8": [{
         "sp_playlist_id": "1zZLwg4oc2I4fRNhPnk2CN",
         "playlist_name": "Shelter-in-Play",
         "playlist_desc": "Songs on repeat during this season of social distance. 1 song added daily till the end of this shelter in place. :)",
@@ -160,7 +160,7 @@
         "play_url": "https://open.spotify.com/playlist/6HDtYkeQbOKicpizMQkKmp"
     }]},
 
-    {"test9": [{
+    {"9": [{
         "sp_playlist_id": "7cPIHjelzTrtmrBfV1YOIP",
         "playlist_name": "rhi-rhi",
         "playlist_desc": "",
@@ -180,7 +180,7 @@
         "play_url": "https://open.spotify.com/playlist/37i9dQZF1DXdyjMX5o2vCq"
     }]},
 
-    {"test10": [{
+    {"10": [{
         "sp_playlist_id": "37i9dQZF1E4rsJEAkC8dDV",
         "playlist_name": "Thirdstory Radio",
         "playlist_desc": "",

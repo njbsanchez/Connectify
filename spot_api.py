@@ -53,15 +53,22 @@ def get_spotify_info():
    
     results = sp_oauth.current_user()
    
-    sp_user_info = {
-                    'display_name':results['display_name'],
-                    'email':results['email'],
-                    'followers':results['followers']['total'],
-                    'sp_user_id':results['id'],
-                    'images':results['images'][0]['url'],
-                    }
+    display_name, email, followers, s_id, images = (
+                    results['display_name'],
+                    results['email'],
+                    results['followers']['total'],
+                    results['id'],
+                    results['images'][0]['url'],
+                    )
     
-    return sp_user_info
+    user = crud.get_user_by_id(session["user_id"])
+    
+    user = User(s_id=s_id, recent_activity=recent_activity)
+
+    db.session.add(user)
+    db.session.commit()
+    
+    return sp_user_info, display_name, email, followers, s_id, images
    
 def get_my_playlists():
     """
@@ -119,20 +126,19 @@ def get_all_tracks():
      
     tracks = []
 
-    results = sp_oauth.current_user_top_tracks(time_range="long_term", limit=10, offset=1)
+    results = sp_oauth.current_user_top_tracks(time_range="long_term", limit=200)
     for track in results['items']:
         track_entry = {'sp_track_id':track['id'],
                        'track_name':track['name'],
                        'artist_id':track['artists'][0]['id'],
-                       'artist_name':track['artists'][0]['name'],
-                    #    'popularity':track['popularity'],
+                       'popularity':track['popularity'],
                     #    'genres':track['genres'],
                         }
         tracks.append(track_entry)
     
-    with open('data/tracks.json','w') as outfile:
-        json.dump(tracks, outfile)
-    print("************ successfully uploaded tracks to json *******")
+    # with open('data/tracks.json','w') as outfile:
+    #     json.dump(tracks, outfile)
+    # print("************ successfully uploaded tracks to json *******")
     
     return tracks
 

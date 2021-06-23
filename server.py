@@ -168,13 +168,13 @@ def show_profile():
        
     sp_user_info = sp.get_spotify_info
 
-    tracks = sp.get_all_tracks()
+    # top_tracks = sp.get_all_tracks()
     
-    artists = get_my_artists()
+    # top_artists = sp.get_my_artists()
     
     playlists =  sp.get_my_playlists()
     
-    return render_template("profile.html", sp_user_info=sp_user_info, artists=artists, playlists=playlists, tracks=tracks)
+    return render_template("profile.html", sp_user_info=sp_user_info,  playlists=playlists) #, top_tracks=top_tracks, top_artists=top_artists)
 
 
 @app.route("/api/usersinfo")
@@ -248,14 +248,18 @@ def show_user(user_id):
     """Show details on a particular user."""
 
     user = crud.get_user_by_id(user_id)
-    # users_tracks = crud.get_user_tracks(user_id)
+    top_tracks = crud.get_user_tracks(user_id)
     top_artists = crud.get_user_artists(user_id)
+    recent_playlists = crud.get_user_playlists(user_id)
+    artist_comparison = crud.compare_artists(1,user_id)
+    track_comparison = crud.compare_tracks(1,user_id)
 
-    return render_template("user_profile.html", user=user, top_artists=top_artists) #users_tracks=users_tracks, 
+    return render_template("user_profile.html", user=user, top_artists=top_artists, top_tracks=top_tracks, recent_playlists=recent_playlists, artist_comparison=artist_comparison, track_comparison=track_comparison)
 
 if __name__ == "__main__":
     connect_to_db(app)
-    # db.create_all()
+    db.create_all()
     app.run(debug=True, use_reloader=True, use_debugger=True)
     
 
+#if you get an error code that says "RuntimeError: application not registered on db instance and no application bound to current context", comment in line 17-20 in modelpy and comment out line 258 and lines 127 & 13 in model.py.
