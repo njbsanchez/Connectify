@@ -68,8 +68,8 @@ def add_playlist(sp_playlist_id, s_id, playlist_name, play_url, play_desc, user_
 
     db.session.add(playlist)
     db.session.commit()
-
-    return playlist
+    
+    return Playlist.query.filter(Playlist.s_id == s_id).first()
 
 def add_track(user_id, track_name, sp_track_id, artist_name, artist_id):
     
@@ -156,7 +156,7 @@ def compare_artists(current_user, user_to_compare):
         "new_artists_to_me": new_artists_3,
         "artist_similar": artist_similar,
         "count_similar": count_similar,
-        "similarity_ratio": similarity_ratio
+        "a_similarity_ratio": similarity_ratio
     }
     
     return artist_comparison
@@ -194,7 +194,25 @@ def compare_tracks(current_user, user_to_compare):
         "new_tracks_to_me": new_tracks_3,
         "track_similar": track_similar,
         "count_similar": count_similar,
-        "similarity_ratio": similarity_ratio
+        "t_similarity_ratio": similarity_ratio
     }
     
     return track_comparison
+
+def clear_playlists():
+    to_delete = get_user_playlists(session["user_id"])
+    for playlist in to_delete:
+        db.session.delete(playlist)
+    db.session.commit()
+
+def clear_tracks():
+    to_delete = get_user_tracks(session["user_id"])
+    for track in to_delete:
+        db.session.delete(track)
+    db.session.commit()
+
+def clear_artists():
+    to_delete = get_user_artists(session["user_id"])
+    for artist in to_delete:
+        db.session.delete(artist)
+    db.session.commit()

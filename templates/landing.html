@@ -1,5 +1,11 @@
 
-{%block title %}Starting Page{% endblock %}
+<body>
+
+    {% for msg in get_flashed_messages() %}
+                <p class="flash-msg">
+                {{ msg }}
+                 </p>
+              {% endfor %}
 
 {% block body %}
   <h1>Welcome!</h1>
@@ -25,3 +31,5 @@
   </ul>
 
 {% endblock %}
+
+</body>

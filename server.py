@@ -5,16 +5,7 @@ from model import connect_to_db, db, User
 import os
 from jinja2 import StrictUndefined
 import spot_api as sp
-import analysis as an
-from flask import (
-    Flask,
-    render_template,
-    session,
-    request,
-    redirect,
-    jsonify,
-    flash,
-    send_from_directory)
+from flask import Flask, render_template, session, request, redirect, jsonify, flash, send_from_directory
 import json
 
 # from flask_oauth import OAuth
@@ -45,7 +36,7 @@ app.jinja_env.undefined = StrictUndefined
 oauth_manager = SpotifyOAuth(
     client_id=SPOITFY_CLIENT_ID,
     client_secret=SPOTIFY_CLIENT_SECRET,
-    redirect_uri="http://localhost:5000/home",
+    redirect_uri="http://localhost:5000/profile",
     scope="user-read-email playlist-read-private playlist-read-collaborative user-top-read",
     cache_handler=CacheSessionHandler(session, "spotify_token"))
 
@@ -65,33 +56,29 @@ def landing():
 def process_login():
     """Process user login."""
 
-    email = request.form.get("email")
-    password = request.form.get("password")
+    email = request.form["email"]
+    password = request.form["password"]
     
     user = crud.get_user_by_email(email)            #check if user exists in database
     
-    if not user:
-        flash("User does not yet exist. Create an account by clicking link below.")
-        return redirect("/")    
-    elif not user and user.password != password:
+    if not user or user.password != password:
         flash("The email or password you entered was incorrect.")
-        return redirect ("/")   
     else:
         session["user_email"] = user.email
         session["user_id"] = user.user_id
         flash(f"Welcome back, {user.name}!")
-
-    return redirect("/auth")
+        return redirect("/profile")
+    
+    return redirect("/")   
+    
 
 @app.route("/auth")
 def authenticate():
     jinja_env = {}
 
-    if request.args.get("code") or oauth_manager.validate_token(
-        oauth_manager.get_cached_token()    
-    ):
+    if request.args.get("code") or oauth_manager.validate_token(oauth_manager.get_cached_token()):
         oauth_manager.get_access_token(request.args.get("code"))
-        return redirect("/home")
+        return redirect("/profile")
 
     return render_template(
         "index.html", spotify_auth_url=oauth_manager.get_authorize_url()
@@ -108,6 +95,24 @@ def authenticate():
 #         return redirect("/")
 
 #     return redirect(jsonify(spotify_auth_url=oauth_manager.get_authorize_url()))
+
+# @app.route("/api/auth")
+# def authen():
+#     if request.args.get("code") or oauth_manager.validate_token(
+#         oauth_manager.get_cached_token()):
+#         oauth_manager.get_access_token(request.args.get("code"))
+#         flash("Account created! Please log in.")
+#         return redirect("")
+    
+#     return redirect(jsonify(spotify_auth_url=oauth_manager.get_authorize_url())
+      
+#     latitude = request.form.get("latitude")
+#     longitude = request.form.get("longitude")
+
+#     user = crud.get_user_by_id(session["user_id"])
+#     crud.update_user_location(user, latitude, longitude)
+ 
+#     return jsonify({"latitude": user.latitude, "longitude": user.longitude})
 
 @app.route("/create")
 def create_new_account():
@@ -133,48 +138,32 @@ def register_user():
         flash("please sign in!")
     
     return redirect("/")
-    
-
-# @app.route("/api/auth")
-# def authen():
-#     if request.args.get("code") or oauth_manager.validate_token(
-#         oauth_manager.get_cached_token()):
-#         oauth_manager.get_access_token(request.args.get("code"))
-#         flash("Account created! Please log in.")
-#         return redirect("")
-    
-#     return redirect(jsonify(spotify_auth_url=oauth_manager.get_authorize_url())
-      
-#     latitude = request.form.get("latitude")
-#     longitude = request.form.get("longitude")
-
-#     user = crud.get_user_by_id(session["user_id"])
-#     crud.update_user_location(user, latitude, longitude)
- 
-#     return jsonify({"latitude": user.latitude, "longitude": user.longitude})
 
 
 @app.route("/profile")
 def show_profile():
     
-    # if session["user_id"] is None:
-    #     flash("Please sign in to access your profile."
-    # return redirect ("/")
-    # trackify_user = session["user_id"]
-    if not oauth_manager.validate_token(oauth_manager.get_cached_token()):
-            return redirect("/auth")
-    else:
-        sp_oauth = Spotify(auth_manager=oauth_manager)
+    if "user_id" not in session.keys():
+        flash("Please sign in to access your profile.")
+        return redirect("/")
+    
+    user_id = session["user_id"]
+    
+    # if not oauth_manager.validate_token(oauth_manager.get_cached_token()):            #this authentication is driving authentication in an endless loop. commented out to allow redirect directly to profile.
+    #         return redirect("/auth")
+    # else:
+    #     sp_oauth = Spotify(auth_manager=oauth_manager)
        
-    sp_user_info = sp.get_spotify_info
-
-    # top_tracks = sp.get_all_tracks()
+    # sp.update_my_playlists(user_id)                                   #to add a "refresh spotify information" button to profile. This updates json with most recent snapshot of track/playlist/artist info.
+    # sp.update_my_tracks(user_id)
+    # sp.update_my_artists(user_id)
+       
+    user = crud.get_user_by_id(user_id)
+    top_tracks = crud.get_user_tracks(user_id)
+    top_artists = crud.get_user_artists(user_id)
+    recent_playlists =  crud.get_user_playlists(user_id)
     
-    # top_artists = sp.get_my_artists()
-    
-    playlists =  sp.get_my_playlists()
-    
-    return render_template("profile.html", sp_user_info=sp_user_info,  playlists=playlists) #, top_tracks=top_tracks, top_artists=top_artists)
+    return render_template("profile.html", recent_playlists=recent_playlists, top_tracks=top_tracks, top_artists=top_artists, user=user) #, top_tracks=top_tracks, top_artists=top_artists)
 
 
 @app.route("/api/usersinfo")
@@ -251,10 +240,25 @@ def show_user(user_id):
     top_tracks = crud.get_user_tracks(user_id)
     top_artists = crud.get_user_artists(user_id)
     recent_playlists = crud.get_user_playlists(user_id)
-    artist_comparison = crud.compare_artists(1,user_id)
-    track_comparison = crud.compare_tracks(1,user_id)
+    artist_comparison = crud.compare_artists(session["user_id"],user_id)
+    track_comparison = crud.compare_tracks(session["user_id"],user_id)
 
     return render_template("user_profile.html", user=user, top_artists=top_artists, top_tracks=top_tracks, recent_playlists=recent_playlists, artist_comparison=artist_comparison, track_comparison=track_comparison)
+
+@app.route("/comparison.json")
+def get_comparison_data(user_id):
+    """Show details on a particular user."""
+
+    artist_comparison = crud.compare_artists(session["user_id"],user_id)
+    track_comparison = crud.compare_tracks(session["user_id"], user_id)
+
+    comparisons = [
+        {'type': "Artist", 'ratio':artist_comparison["a_similarity_ratio"]},
+        {'type': "Track", 'ratio': track_comparison["t_similarity_ratio"]}
+    ]
+    
+    return jsonify({'data':comparisons})
+
 
 if __name__ == "__main__":
     connect_to_db(app)

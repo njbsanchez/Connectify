@@ -8,56 +8,36 @@
 
 <document.getElementById>
 
-<h1>User Details</h1>  
+<h2>User Details</h2>  
 
-  {% for key, val in sp_user_info().items() %}
-    <dt>{{ key }} :::: {{ val }}</dt>
-  {% endfor %}
-  <dt>  </dt>
-  <dt> ----------- :::: --------- </dt>
-  <dt>  </dt>
+  <li> {{ user.name }} </li>
+  <li> {{ user.s_id }} </li>
+  <li> {{ user.recent_activity}} </li>
 
+<h2>Playlists</h2>  
 
-  <h1>Playlists</h1>
-
-  <ul>
-    {% for playlist in playlists %}
-      <li>
-        <a href="/playlists/{{ playlist.play_url }}">
-          {{ playlist.playlist_name }}
-          {{ playlist.playlist_desc }}
-        </a>
-      </li>
+<ul>
+    {% for playlist in recent_playlists %}
+      <li> <a href="{{ playlist.play_url }}"> {{ playlist.playlist_name }} </a> -- {{ playlist.play_desc }} </li>
     {% endfor %}
-    
-  </ul>
+</ul>
 
-<h1>Top Tracks</h1>
 
-  <ul>
-    {% for track in top_tracks %}
-      <li>
-        <a href="/tracks/{{ track.sp_track_id }}">
-          {{ track.track_name }}
-        </a>
-      </li>
-    {% endfor %}
-    
-  </ul>
+<h2>Top 10 Artists</h2>  
 
- <h1>Top Artists</h1>
-
-  <ul>
+<ul>
     {% for artist in top_artists %}
-      <li>
-        <a href="/artists/{{ artist.sp_artist_id }}">
-          {{ artist.artist_name }}
-        </a>
-      </li>
+      <li> {{ artist.artist_name }}</li>
     {% endfor %}
-  </ul>
+</ul>
 
-  <p> ***************** in progress ******************</p>
+<h2>Top 10 Tracks</h2>  
+
+<ul>
+    {% for track in top_tracks %}
+      <li> {{ track.track_name }} -- {{ track.artist_name }}</li>
+    {% endfor %}
+</ul>
 
 
-{% endblock body %}
+ {% endblock %}

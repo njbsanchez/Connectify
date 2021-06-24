@@ -1,7 +1,13 @@
+<!doctype html>
 
 {% extends 'base.html' %}
 
 {% block title %}{{ user.name }}'s Page{% endblock %}
+
+{% block head %}
+  {# ChartJS #}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+{% endblock %}
 
 {% block body %}
 <h1>{{ user.name }}'s Page</h1>
@@ -64,8 +70,12 @@
     <h3></h3>
 </ul>
 
-
+<div>
+  <canvas id="comparison-chart"></canvas>
+</div>
 
 <p> <a href="/users">Back to all Users</a> </p>
+<script src="/static/js/chart.js"></script>
 
 {% endblock %}
+

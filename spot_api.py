@@ -47,37 +47,43 @@ def get_sp_oauth(o_auth):
         sp_oauth = Spotify(auth_manager=oauth_manager)
         return sp_oauth
 
-def get_spotify_info():
+def update_spotify_info():
 
     sp_oauth = get_sp_oauth(oauth_manager)
    
     results = sp_oauth.current_user()
    
-    display_name, email, followers, s_id, images = (
-                    results['display_name'],
-                    results['email'],
-                    results['followers']['total'],
-                    results['id'],
-                    results['images'][0]['url'],
-                    )
+    user_info = {
+        "display_name": results['display_name'],
+        "email": results['email'],
+        "followers": results['followers']['total'],
+        "s_id": results['id'],
+        "images": results['images'][0]['url']
+    }
     
     user = crud.get_user_by_id(session["user_id"])
     
-    user = User(s_id=s_id, recent_activity=recent_activity)
+    user.s_id = user_info["s_id"]
+    user.recent_activity = user_info["recent_activity"]
+    # user.sp_user_info = user_info["sp_user_info"]
+    # user.display_name = user_info["display_name"]
+    # user.email = user_info["email"]
+    # user.followers = user_info["followers"]
+    # user.images = user_info["images"]
 
     db.session.add(user)
     db.session.commit()
     
-    return sp_user_info, display_name, email, followers, s_id, images
-   
-def get_my_playlists():
+    return user_info
+
+def get_playlists_from_sp():
     """
     From Spotify, get name, id, and put into a list called "playlists".
     To be used for "edit my top playlist" page
     """
     sp_oauth = get_sp_oauth(oauth_manager)
     
-    sp_playlists = sp_oauth.current_user_playlists(limit=5)
+    sp_playlists = sp_oauth.current_user_playlists(limit=3)
    
     playlists = []
     
@@ -85,117 +91,75 @@ def get_my_playlists():
         playlist_entry = {'sp_playlist_id':playlist['id'],
                         'playlist_name':playlist['name'],
                        'playlist_desc':playlist['description'],
-                       'owner_id':playlist['owner']['id'],
+                       's_id':playlist['owner']['id'],
                        'play_url':playlist['external_urls']['spotify'],
                     #    'href':playlist['external_urls']['href']
                         }
         playlists.append(playlist_entry)
         
-    # with open('data/playlists.json','w') as outfile:
-    #     json.dump(playlists, outfile)
-    # print("************ successfully uploaded playlists to json *******")
+    with open('data/playlists.json','w') as outfile:
+        json.dump(playlists, outfile)
+    print("************ successfully pulled playlists from spotify and moved to json *******")
     
     return playlists
-    
-    #----create a view function----#
 
-def update_track_db():
-    """to update tracks in user's database"""
+def update_my_playlists(user_id):
     
-    tracks_in_db = []
-    tracks = get_my_playlists()
-    user_id = session['user_id']
+    crud.clear_playlists()
     
-    for track in tracks:
-        sp_track_id, track_name, artist, artist_id, popularity, genres = (
-            track["sp_track_id"],
-            track["track_name"],
-            track["artist"],
-            track["artist_id"],
-            track["popularity"],
-            # track["genre"],
-        )
+    playlists = get_playlists_from_sp()
+    
+    for playlist in playlists:
+        crud.add_playlist(playlist["sp_playlist_id"], playlist["s_id"], playlist["playlist_name"], playlist["play_url"], playlist["playlist_desc"], user_id)
         
-        db_track = crud.add_track(sp_track_id, track_name, artist, artist_id, popularity, genres, user_id)
-        tracks_in_db.append(db_track)
-                                           
+    print("************* successfully uploaded all playlists to current user ************")
 
-def get_all_tracks():
+def get_tracks_from_sp():
     
     sp_oauth = get_sp_oauth(oauth_manager)
-     
-    tracks = []
 
-    results = sp_oauth.current_user_top_tracks(time_range="long_term", limit=200)
-    for track in results['items']:
+    sp_tracks = sp_oauth.current_user_top_tracks(time_range="long_term", limit=10)
+    
+    tracks = []
+    
+    for track in sp_tracks['items']:
         track_entry = {'sp_track_id':track['id'],
                        'track_name':track['name'],
+                       'artist_name':track['artists'][0]['name'],
                        'artist_id':track['artists'][0]['id'],
                        'popularity':track['popularity'],
                     #    'genres':track['genres'],
                         }
         tracks.append(track_entry)
     
-    # with open('data/tracks.json','w') as outfile:
-    #     json.dump(tracks, outfile)
-    # print("************ successfully uploaded tracks to json *******")
+    with open('data/tracks.json','w') as outfile:
+        json.dump(tracks, outfile)
+    
+    print("************ successfully pulled tracks from spotify and moved to json *******")
     
     return tracks
 
-def update_track_db():
+def update_my_tracks(user_id):
     """to update tracks in user's database"""
     
-    tracks_in_db = []
-    tracks = get_my_playlists()
-    user_id = session['user_id']
+    crud.clear_tracks()
+    
+    tracks = get_tracks_from_sp()
     
     for track in tracks:
-        sp_track_id, track_name, artist_name, artist_id = (
-            track["sp_track_id"],
-            track["track_name"],
-            track["artist"],
-            track["artist_id"]
-            # track["popularity"],
-            # track["genre"],
-        )
+        crud.add_track(user_id, track["track_name"], track["sp_track_id"], track["artist_name"], track["artist_id"])
         
-        db_track = crud.add_track(sp_track_id, track_name, artist, artist_id, popularity, genres, user_id)
-        tracks_in_db.append(db_track)
-    
-    
-# def get_my_artists():
-#     """Load user's real top_artists into database."""
-        
-#     sp_oauth = get_sp_oauth(oauth_manager)
-    
-#     user_id = session.get('user_id')
-
-#     results = sp_oauth.current_user_top_artists(time_range="long_term", limit=10, offset=10)
-    
-#     for artist in results['items']:
-#         sp_artist_id, artist_name = (artist['id'],
-#                                      artist['name'],
-#                                     #  artist['genres'],
-#                                     #  artist['popularity'],
-#                                     #  artist['images']
-#         )
-    
-#     session.query(artist).filter(artist.user_id==user_id).delete()
-    
-#     db_artists = crud.add_artist(user_id, sp_artist_id, artist_name)
-#     dum_artists_in_db.append(db_artists)
-#     model.db.session.commit()
-    
-
-                                                                   
-def get_my_artists():
+    print("************* successfully uploaded all playlists to current user ************")
+                                                               
+def get_artists_from_sp():
     
     sp_oauth = get_sp_oauth(oauth_manager)
     
+    sp_artists = sp_oauth.current_user_top_artists(time_range="long_term", limit=10)
+
     artists = []
 
-    results = sp_oauth.current_user_top_artists(time_range="long_term", limit=10, offset=10)
-    for artist in results['items']:
+    for artist in sp_artists['items']:
         artist_info = {'sp_artist_id':artist['id'],
                        'artist_name':artist['name'],
                     #    'genres':artist['genres'],
@@ -206,25 +170,20 @@ def get_my_artists():
     
     with open('data/artists.json','w') as outfile:
         json.dump(artists, outfile)
-    print("************ successfully uploaded artists to json *******")
+    
+    print("************ successfully pulled artists from spotify and moved to json *******")
 
     return artists
 
-def update_artist_db():
+def update_my_artists(user_id):
     """to update tracks in user's database"""
     
-    artists_in_db = []
-    artists = get_my_artists()
-    user_id = session['user_id']
+    crud.clear_artists()
+    
+    artists = get_artists_from_sp()
     
     for artist in artists:
-        sp_artist_id, artist_name, genre, popularity, image = (
-            artist["sp_artist_id"],
-            artist["artist_name"],
-            # artist["genre"],
-            artist["popularity"],
-            artist["image"],
-        )
-        db_artist = crud.add_artist(sp_artist_id, artist_name, genre, popularity, image, user_id)
-        artists_in_db.append(db_artist)
-        
+        crud.add_artist(user_id, artist["sp_artist_id"], artist["artist_name"])
+    
+    print("************* successfully uploaded all artists to current user ************")
+                            
