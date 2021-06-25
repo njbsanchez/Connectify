@@ -67,9 +67,9 @@ def process_login():
         session["user_email"] = user.email
         session["user_id"] = user.user_id
         flash(f"Welcome back, {user.name}!")
-        return redirect("/home")
+        return redirect("/connect")
     
-    return redirect("/home")   
+    return redirect("/")   
     
 
 @app.route("/auth")
@@ -222,7 +222,9 @@ def logout():
 def connect_users():
     """show map of other users"""
     
-    return render_template("connect.html")
+    users = crud.get_users()
+    
+    return render_template("connect.html", users=users)
 
 @app.route("/users")
 def all_users():

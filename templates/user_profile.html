@@ -10,8 +10,9 @@
 {% endblock %}
 
 {% block body %}
-  <div class="row px-4 py-5">
-    <div class="col-4">
+  <document.getElementById>
+  <div class="row">
+    <div class="col-3">
         <!-- Profile widget -->
         <div class="bg-white shadow rounded overflow-hidden">
          <div class="px-5 pt-4 pb-0 cover">
@@ -64,77 +65,80 @@
                   <div class="col-lg-6 mb-2 pl-lg-1"><img src="https://images.unsplash.com/photo-1493571716545-b559a19edd14?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" alt="" class="img-fluid rounded shadow-sm"></div>
                 </div>
             </div>
+          </div>
         </div>
     </div>
-    <div class="col-8">
-      <div class="bg-white shadow rounded overflow-hidden">
-
-</div>
+    <div class="col-9">
+        <div class="row col-12 px-2 mb-2">
+            <div class="bg-white shadow rounded overflow-hidden">
+                <p> Compatibility </p>
+            </div> 
         </div>
-    </div>
- 
-    <div class="col-md-8">
-    
+        <div class="row col-12 px-2 mb-2">
+            <div class="bg-white shadow rounded overflow-hidden">
+                <h2>Playlists</h2>  
+                <ul>
+                    {% for playlist in recent_playlists %}
+                      <li> <a href="{{ playlist.play_url }}"> {{ playlist.playlist_name }} </a> -- {{ playlist.play_desc }} </li>
+                    {% endfor %}
+                </ul>
+            </div> 
+        </div>
+        <div class="row col-12 px-0 mb-2">
+            <div class="col-4 mb-2">
+                <div class="bg-white shadow rounded overflow-hidden">
+                    <h2>Top 10 Artists</h2>  
+                    <ul>
+                        {% for artist in top_artists %}
+                          <li> {{ artist.artist_name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div> 
+             </div>   
+             <div class="col-8 mb-2">
+                <div class="bg-white shadow rounded overflow-hidden">
+                    <h2>Top 10 Tracks</h2>  
+                    <ul>
+                        {% for track in top_tracks %}
+                          <li> {{ track.track_name }} -- {{ track.artist_name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+              </div>
+          </div>
+        <div class="row col-12 px-2 mb-2">  
+            <div class="bg-white shadow rounded overflow-hidden">
+          <h2>Calculate Comparisons</h2>  
 
+          <ul>
+              <h3>Similar Artists</h3>
+                {% for artist in artist_comparison.artist_similar %}
+                    <li> {{ artist[0] }}</li>
+                {% endfor %}
+              <h3>{{user.name}}'s Favorite Artists You Should Check Out!</h3>
+                {% for artist in artist_comparison.new_artists_to_me %}
+                    <li> {{ artist[0] }}</li>
+                  {% endfor %}
+              <h3></h3>
+              <h3>- - - - - - -- </h3>
+              <h3></h3>
+              <h3>Similar Tracks</h3>
+                {% for track in track_comparison.track_similar %}
+                    <li> {{ track[0] }}</li>
+                {% endfor %}
+              <h3>{{user.name}}'s Favorite Tracks You Should Check Out!</h3>
+                {% for track in track_comparison.new_tracks_to_me %}
+                    <li> {{ track[0] }}</li>
+                  {% endfor %}
+              <h3></h3>
+          </ul>
 
+          <div>
+            <canvas id="comparison-chart"></canvas>
+          </div>
 
-  <document.getElementById>
+          <p> <a href="/users">Back to all Users</a> </p>
+          <script src="/static/js/chart.js"></script>
 
-  <h2>Playlists</h2>  
-
-  <ul>
-      {% for playlist in recent_playlists %}
-        <li> <a href="{{ playlist.play_url }}"> {{ playlist.playlist_name }} </a> -- {{ playlist.play_desc }} </li>
-      {% endfor %}
-  </ul>
-
-  <h2>Top 10 Artists</h2>  
-
-  <ul>
-      {% for artist in top_artists %}
-        <li> {{ artist.artist_name }}</li>
-      {% endfor %}
-  </ul>
-
-  <h2>Top 10 Tracks</h2>  
-
-  <ul>
-      {% for track in top_tracks %}
-        <li> {{ track.track_name }} -- {{ track.artist_name }}</li>
-      {% endfor %}
-  </ul>
-
-  <h2>Calculate Comparisons</h2>  
-
-  <ul>
-      <h3>Similar Artists</h3>
-        {% for artist in artist_comparison.artist_similar %}
-            <li> {{ artist[0] }}</li>
-        {% endfor %}
-      <h3>{{user.name}}'s Favorite Artists You Should Check Out!</h3>
-        {% for artist in artist_comparison.new_artists_to_me %}
-            <li> {{ artist[0] }}</li>
-          {% endfor %}
-      <h3></h3>
-      <h3>- - - - - - -- </h3>
-      <h3></h3>
-      <h3>Similar Tracks</h3>
-        {% for track in track_comparison.track_similar %}
-            <li> {{ track[0] }}</li>
-        {% endfor %}
-      <h3>{{user.name}}'s Favorite Tracks You Should Check Out!</h3>
-        {% for track in track_comparison.new_tracks_to_me %}
-            <li> {{ track[0] }}</li>
-          {% endfor %}
-      <h3></h3>
-  </ul>
-
-  <div>
-    <canvas id="comparison-chart"></canvas>
-  </div>
-
-  <p> <a href="/users">Back to all Users</a> </p>
-  <script src="/static/js/chart.js"></script>
-
-  {% endblock %}
+          {% endblock %}
 
