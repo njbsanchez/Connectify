@@ -4,40 +4,41 @@
 
 {% block body %}
 
-<h2> </h2>
+  <div class = "container">
 
-<document.getElementById>
+    <document.getElementById>
+    
+    <h2>User Details</h2>  
+      <li> {{ user.name }} </li>
+      <li> {{ user.s_id }} </li>
+      <li> {{ user.recent_activity}} </li>
 
-<h2>User Details</h2>  
+    <h2>Playlists</h2>  
+    <ul>
+        {% for playlist in recent_playlists %}
+          <li> <a href="{{ playlist.play_url }}"> {{ playlist.playlist_name }} </a> -- {{ playlist.play_desc }} </li>
+        {% endfor %}
+    </ul>
 
-  <li> {{ user.name }} </li>
-  <li> {{ user.s_id }} </li>
-  <li> {{ user.recent_activity}} </li>
+    <div class="row">
+      <div class = "col-6">
+        <h2>Top 10 Artists</h2>  
+        <ul>
+            {% for artist in top_artists %}
+              <li> {{ artist.artist_name }}</li>
+            {% endfor %}
+        </ul>
+      </div>
 
-<h2>Playlists</h2>  
-
-<ul>
-    {% for playlist in recent_playlists %}
-      <li> <a href="{{ playlist.play_url }}"> {{ playlist.playlist_name }} </a> -- {{ playlist.play_desc }} </li>
-    {% endfor %}
-</ul>
-
-
-<h2>Top 10 Artists</h2>  
-
-<ul>
-    {% for artist in top_artists %}
-      <li> {{ artist.artist_name }}</li>
-    {% endfor %}
-</ul>
-
-<h2>Top 10 Tracks</h2>  
-
-<ul>
-    {% for track in top_tracks %}
-      <li> {{ track.track_name }} -- {{ track.artist_name }}</li>
-    {% endfor %}
-</ul>
-
+      <div class = "col-6">
+        <h2>Top 10 Tracks</h2>  
+        <ul>
+            {% for track in top_tracks %}
+              <li> {{ track.track_name }} -- {{ track.artist_name }}</li>
+            {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
 
  {% endblock %}

@@ -10,72 +10,131 @@
 {% endblock %}
 
 {% block body %}
-<h1>{{ user.name }}'s Page</h1>
+  <div class="row px-4 py-5">
+    <div class="col-4">
+        <!-- Profile widget -->
+        <div class="bg-white shadow rounded overflow-hidden">
+         <div class="px-5 pt-4 pb-0 cover">
+            <div class="media align-items-end profile-head">
+                <div class="profile mr-3 text-center"><img src="https://i.guim.co.uk/img/media/dd3882c4ad0fd11a14cffc7e5edaabe5ce8a8b53/0_85_1077_646/master/1077.jpg?width=700&quality=85&auto=format&fit=max&s=c906598d7b435814a7e49a5ee4779c2f" alt="{{ user.name }}'s profile image" width="200" class="rounded mb-2 img-thumbnail">
+                <div class="media-body mb-5 text-black">
+                    <h3 class="mt-0 mb-0 text-center">{{ user.name }}</h3>
+                    <p></p>
+                    <p class="small mb-4 text-center">Last Played at {{ user.recent_activity }}</p>
+                </div>
+            </div>
+          </div>
+          <div class="bg-light p-4 d-flex justify-content-center text-center">
+                <ul class="list-inline mb-0">
+                    <li class="list-inline-item">
+                        <h5 class="font-weight-bold mb-0 d-block">215</h5><small class="text-muted"> <i class="fas fa-image mr-1"></i>Playlists</small>
+                    </li>
+                    <li class="list-inline-item">
+                        <h5 class="font-weight-bold mb-0 d-block">745</h5><small class="text-muted"> <i class="fas fa-user mr-1"></i>Followers</small>
+                    </li>
+                    <li class="list-inline-item">
+                        <h5 class="font-weight-bold mb-0 d-block">340</h5><small class="text-muted"> <i class="fas fa-user mr-1"></i>Following</small>
+                    </li>
+                </ul>
+          </div>
+                      <div class="px-4 py-3">
+                <h5 class="mb-0 text-center">About</h5>
+                <p></p>
+                <div class="p-4 rounded shadow-sm bg-light">
+                    <p class="font-italic mb-0">Web Developer</p>
+                    <p class="font-italic mb-0">Lives in New York</p>
+                    <p class="font-italic mb-0">Photographer</p>
+                </div>
+            </div>
+            <div class="py-4 px-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="mb-0">Following</h5><a href="#" class="btn btn-link text-muted">Show all</a>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 mb-2 pr-lg-1"><img src="https://images.unsplash.com/photo-1469594292607-7bd90f8d3ba4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" alt="" class="img-fluid rounded shadow-sm"></div>
+                  <div class="col-lg-6 mb-2 pl-lg-1"><img src="https://images.unsplash.com/photo-1493571716545-b559a19edd14?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" alt="" class="img-fluid rounded shadow-sm"></div>
+                </div>
+            </div>
+             <div class="py-4 px-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="mb-0">Followers</h5><a href="#" class="btn btn-link text-muted">Show all</a>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 mb-2 pr-lg-1"><img src="https://images.unsplash.com/photo-1469594292607-7bd90f8d3ba4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" alt="" class="img-fluid rounded shadow-sm"></div>
+                  <div class="col-lg-6 mb-2 pl-lg-1"><img src="https://images.unsplash.com/photo-1493571716545-b559a19edd14?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" alt="" class="img-fluid rounded shadow-sm"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-8">
+      <div class="bg-white shadow rounded overflow-hidden">
 
-<document.getElementById>
-
-<h2>User Details</h2>  
-
-  <li> {{ user.name }} </li>
-  <li> {{ user.s_id }} </li>
-  <li> {{ user.recent_activity}} </li>
-
-<h2>Playlists</h2>  
-
-<ul>
-    {% for playlist in recent_playlists %}
-      <li> <a href="{{ playlist.play_url }}"> {{ playlist.playlist_name }} </a> -- {{ playlist.play_desc }} </li>
-    {% endfor %}
-</ul>
-
-
-<h2>Top 10 Artists</h2>  
-
-<ul>
-    {% for artist in top_artists %}
-      <li> {{ artist.artist_name }}</li>
-    {% endfor %}
-</ul>
-
-<h2>Top 10 Tracks</h2>  
-
-<ul>
-    {% for track in top_tracks %}
-      <li> {{ track.track_name }} -- {{ track.artist_name }}</li>
-    {% endfor %}
-</ul>
-
-<h2>Calculate Comparisons</h2>  
-
-<ul>
-    <h3>Similar Artists</h3>
-      {% for artist in artist_comparison.artist_similar %}
-          <li> {{ artist[0] }}</li>
-      {% endfor %}
-    <h3>{{user.name}}'s Favorite Artists You Should Check Out!</h3>
-      {% for artist in artist_comparison.new_artists_to_me %}
-          <li> {{ artist[0] }}</li>
-        {% endfor %}
-    <h3></h3>
-    <h3>- - - - - - -- </h3>
-    <h3></h3>
-    <h3>Similar Tracks</h3>
-      {% for track in track_comparison.track_similar %}
-          <li> {{ track[0] }}</li>
-      {% endfor %}
-    <h3>{{user.name}}'s Favorite Tracks You Should Check Out!</h3>
-      {% for track in track_comparison.new_tracks_to_me %}
-          <li> {{ track[0] }}</li>
-        {% endfor %}
-    <h3></h3>
-</ul>
-
-<div>
-  <canvas id="comparison-chart"></canvas>
 </div>
+        </div>
+    </div>
+ 
+    <div class="col-md-8">
+    
 
-<p> <a href="/users">Back to all Users</a> </p>
-<script src="/static/js/chart.js"></script>
 
-{% endblock %}
+
+  <document.getElementById>
+
+  <h2>Playlists</h2>  
+
+  <ul>
+      {% for playlist in recent_playlists %}
+        <li> <a href="{{ playlist.play_url }}"> {{ playlist.playlist_name }} </a> -- {{ playlist.play_desc }} </li>
+      {% endfor %}
+  </ul>
+
+  <h2>Top 10 Artists</h2>  
+
+  <ul>
+      {% for artist in top_artists %}
+        <li> {{ artist.artist_name }}</li>
+      {% endfor %}
+  </ul>
+
+  <h2>Top 10 Tracks</h2>  
+
+  <ul>
+      {% for track in top_tracks %}
+        <li> {{ track.track_name }} -- {{ track.artist_name }}</li>
+      {% endfor %}
+  </ul>
+
+  <h2>Calculate Comparisons</h2>  
+
+  <ul>
+      <h3>Similar Artists</h3>
+        {% for artist in artist_comparison.artist_similar %}
+            <li> {{ artist[0] }}</li>
+        {% endfor %}
+      <h3>{{user.name}}'s Favorite Artists You Should Check Out!</h3>
+        {% for artist in artist_comparison.new_artists_to_me %}
+            <li> {{ artist[0] }}</li>
+          {% endfor %}
+      <h3></h3>
+      <h3>- - - - - - -- </h3>
+      <h3></h3>
+      <h3>Similar Tracks</h3>
+        {% for track in track_comparison.track_similar %}
+            <li> {{ track[0] }}</li>
+        {% endfor %}
+      <h3>{{user.name}}'s Favorite Tracks You Should Check Out!</h3>
+        {% for track in track_comparison.new_tracks_to_me %}
+            <li> {{ track[0] }}</li>
+          {% endfor %}
+      <h3></h3>
+  </ul>
+
+  <div>
+    <canvas id="comparison-chart"></canvas>
+  </div>
+
+  <p> <a href="/users">Back to all Users</a> </p>
+  <script src="/static/js/chart.js"></script>
+
+  {% endblock %}
 

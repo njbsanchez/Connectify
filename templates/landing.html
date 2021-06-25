@@ -1,35 +1,54 @@
-
+<!DOCTYPE html>
+<html lang="en">
+{% extends 'ex_base.html' %}
+<head>
+  {% block title%}
+        {% for msg in get_flashed_messages() %}
+          <p class="flash-msg">
+          {{ msg }}
+            </p>
+        {% endfor %}
+  {% endblock %}
+  
+  <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+  <link href="static/js/landing.css" rel="stylesheet">
+</head>
 <body>
+  <main>
+        
+    {% block body %}
 
-    {% for msg in get_flashed_messages() %}
-                <p class="flash-msg">
-                {{ msg }}
-                 </p>
-              {% endfor %}
+      <div class="container col-xl-10 col-xxl-8 px-4 py-5">
+        <div class="row align-items-center g-lg-5 py-5">
+          <div class="col-lg-7 text-center text-lg-start">
+            <h1 class="display-4 fw-bold lh-1 mb-3">Log In</h1>
+            <p class="col-lg-10 fs-4">
+              Please log in here.
+            </p>
+          </div>
+          <div class="col-md-10 mx-auto col-lg-5">
+            <form action="/login" method="POST" class="p-4 p-md-5 border rounded-3 bg-light">
+              <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="floatingInput" name="email" placeholder="name@example.com">
+                <label for="floatingInput">Email Address</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Password">
+                <label for="floatingPassword">Password</label>
+              </div>
+              <button class="w-100 btn btn-lg btn-primary" type="submit">Log In</button>
+            <hr class="my-4">
+            <div class="text-center">
+            <small class="text-muted">Don't have an account yet? Click <a href="/create">here!</a></small>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="b-divider"></div>
 
-{% block body %}
-  <h1>Welcome!</h1>
-
-  <h2>Log In</h2>
-  <form action="/login" method="POST">
-    <p>
-      Email <input type="text" name="email">
-    </p>
-    <p>
-      Password <input type="password" name="password">
-    </p>
-
-    <p>
-      <input type="submit" id="submit">
-    </p>
-  </form>
-
-
-  <h2>Navigation</h2>
-  <ul>
-    <li><a href="/create">Don't have an account yet? Click here!</a></li>
-  </ul>
-
-{% endblock %}
-
+    {% endblock %}
+  </main>
 </body>

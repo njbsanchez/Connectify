@@ -5,3 +5,4 @@ tryit.py
 .cache
 .env
 secrets.sh
+.DS_Store

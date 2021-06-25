@@ -67,9 +67,9 @@ def process_login():
         session["user_email"] = user.email
         session["user_id"] = user.user_id
         flash(f"Welcome back, {user.name}!")
-        return redirect("/profile")
+        return redirect("/home")
     
-    return redirect("/")   
+    return redirect("/home")   
     
 
 @app.route("/auth")
@@ -150,12 +150,12 @@ def show_profile():
     user_id = session["user_id"]
     
     # if not oauth_manager.validate_token(oauth_manager.get_cached_token()):            #this authentication is driving authentication in an endless loop. commented out to allow redirect directly to profile.
-    #         return redirect("/auth")
+    #         return redirect("/p")
     # else:
     #     sp_oauth = Spotify(auth_manager=oauth_manager)
        
     # sp.update_my_playlists(user_id)                                   #to add a "refresh spotify information" button to profile. This updates json with most recent snapshot of track/playlist/artist info.
-    # sp.update_my_tracks(user_id)
+    # # sp.update_my_tracks(user_id)
     # sp.update_my_artists(user_id)
        
     user = crud.get_user_by_id(user_id)
