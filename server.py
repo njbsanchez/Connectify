@@ -244,8 +244,10 @@ def show_user(user_id):
     recent_playlists = crud.get_user_playlists(user_id)
     artist_comparison = crud.compare_artists(session["user_id"],user_id)
     track_comparison = crud.compare_tracks(session["user_id"],user_id)
+    artist_count = len(top_artists)
+    track_count = len(top_tracks)
 
-    return render_template("user_profile.html", user=user, top_artists=top_artists, top_tracks=top_tracks, recent_playlists=recent_playlists, artist_comparison=artist_comparison, track_comparison=track_comparison)
+    return render_template("user_profile.html", user=user, top_artists=top_artists, top_tracks=top_tracks, recent_playlists=recent_playlists, artist_comparison=artist_comparison, track_comparison=track_comparison, artist_count=artist_count, track_count=track_count)
 
 @app.route("/comparison.json")
 def get_comparison_data(user_id):

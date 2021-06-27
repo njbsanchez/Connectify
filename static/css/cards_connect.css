@@ -1,0 +1,7 @@
+#left {       /* line 40 on connect.html needs an independent scroll feature */
+  height:100%;
+  position: absolute;
+  overflow-y: scroll; 
+}
+
+
