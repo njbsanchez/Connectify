@@ -23,9 +23,8 @@
         <div class="container">
         </div> 
       <ul>
-          {% for bookmark in bookmarks %}
-            <li> {{ user.user_id }} -- {{ user.bookmarked_user_id }}</li>
-                {% for bookmark%}
+          {% for artist in all_artists %}
+            <li> {{ artist.artist_id }} -- {{ artist.artist_name }} -- {{ artist.user_id }}</li>
           {% endfor %}
       </ul>
     </div>

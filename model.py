@@ -21,6 +21,7 @@ def connect_to_db(flask_app, db_uri='postgresql:///trackify', echo=False):      
 
     print('Connected to the db!')
 
+
 class User(db.Model):
     """A user."""
     
@@ -46,8 +47,10 @@ class User(db.Model):
     bookmarks = db.relationship('Bookmark', foreign_keys='Bookmark.user_id', backref='user')
     
     tracks = db.relationship('Track', backref='user')
-
     
+    def __repr__(self):
+        return f'<User user_id = {self.user_id} name = {self.name} email = {self.email} >'
+
     def bookmark_user(self, user):
         user = int(user)
         if not self.has_bookmarked_user(user):
@@ -71,8 +74,32 @@ class User(db.Model):
             Bookmark.user_id == self.user_id,
             Bookmark.bookmarked_user_id == user.user_id).count() > 0
       
-    def __repr__(self):
-        return f'< user_id = {self.user_id} name = {self.name} email = {self.email} >'
+    def get_token_info(self):
+        """Return sp_token_info dictionary (for Spotipy token cache)."""
+
+        return {
+            "access_token": self.sp_token_info.access_token,
+            "expires_in": self.sp_token_info.expires_in
+        }
+
+
+class SpotifyTokenInfo(db.Model):
+    
+    __tablename__ = "tokeninfo"
+    
+    sp_token_id = db.Colmn(db.Integer,
+                           autoincrement=True,
+                           primary_key=True)
+    user_id = db.Column(db.ForeignKey('users.user_id'), nullable=False)
+    access_token = db.Column(db.String)
+    expires_in = db.Column(db.Integer)
+
+    user = db.relationship(
+        'User',
+        backref='sp_token_info',
+        uselist=False
+    )
+    
 
 class Track(db.Model):
     """Top 50 tracks (long term)"""

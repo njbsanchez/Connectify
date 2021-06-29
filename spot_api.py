@@ -6,10 +6,34 @@ from pprint import pprint
 from spotipy import Spotify, CacheHandler
 
 import crud
-
+from model import SpotifyTokenInfo
 
 SPOITFY_CLIENT_ID = os.environ.get("SPOTIFY_CLIENT_ID")
 SPOTIFY_CLIENT_SECRET = os.environ.get("SPOTIFY_CLIENT_SECRET")
+
+
+class CacheDBHandler(CacheHandler):
+    def __init__(self, session):
+        self.session = session  # Flask session object
+
+    def get_cached_token(self):
+        """Get token user that's logged in."""
+        
+        if "user_id" not in self.session:
+            return None
+        
+        user = crud.get_user_by_id(self.session["user_id"])
+        
+        return user.get_token_info()
+    
+    def save_token_to_cache(self, token_info):
+        user = crud.get_user_by_id(self.session["user_id"])
+
+        if not user.sp_token_info:
+            user.sp_token_info = SpotifyTokenInfo()
+
+        user.sp_token_info.access_token = token_info.get("access_token")
+        user.sp_token_info.expires_in = token_info.get("expires_in")
 
 
 class CacheSessionHandler(CacheHandler):

@@ -37,7 +37,7 @@ oauth_manager = SpotifyOAuth(
     client_secret=SPOTIFY_CLIENT_SECRET,
     redirect_uri="http://localhost:5000/auth",
     scope="user-read-email playlist-read-private playlist-read-collaborative user-top-read",
-    cache_handler=sp.CacheSessionHandler(session, "spotify_token"))
+    cache_handler=sp.CacheDBHandler(session))
 
 @app.route("/coming_soon")
 def coming_soon():
@@ -53,6 +53,30 @@ def landing():
         return redirect('/connect')
     
     return render_template("landing.html")
+
+
+@app.route("/login-with-spotify")
+def redirect_to_spotify_auth():
+    return redirect(oauth_manager.get_authorize_url())
+
+    
+@app.route("/spotify-callback")
+def handle_redirect_after_spotify_auth():
+    pass
+
+"""
+get code from request.args ---> use code to get an access token
+(oauth manager.get_access_token)
+authenticate with spotify
+sp_oauth = Spotify(auth_manager=o_auth)
+use spotify to get user's email
+if user already exists in database:
+    log in
+else: 
+    create user
+        add userid to session
+        make sure token is saved spotify token info
+"""
 
 @app.route("/create")
 def create_new_account():
@@ -122,7 +146,7 @@ def show_profile():
     
     user_id = session["user_id"]
     if 'code' in request.args:
-        oauth_manager.get_access_token(request.args['code'])    
+        oauth_manager.get_access_token(request.args['code'])      
     
     sp_oauth = sp.get_sp_oauth(oauth_manager)
     
@@ -163,14 +187,6 @@ def show_profile():
     recent_playlists =  crud.get_user_playlists(user_id)
     
     return render_template("profile.html", recent_playlists=recent_playlists, user=user, top_tracks=top_tracks, top_artists=top_artists)
-
-
-
-
-
-
-
-
 
 @app.route("/connect")
 def connect_users():
@@ -251,8 +267,6 @@ def homepage():
     else:
         return redirect("/")
 
-"""under construction ************************************************************************************ """
-
 @app.route('/bookmark/<bookmarked_user_id>/<action>')
 def bookmark_action(bookmarked_user_id, action):
     
@@ -268,31 +282,32 @@ def bookmark_action(bookmarked_user_id, action):
         
     return redirect("/bookmarks")
 
-# @app.route("/bookmark/<int: bookmarked_user_id>/<action>", methods=["POST"])
-# def bookmark_action(bookmarked_user_id, action):
-    
-#     current_user = User.User.query.filter_by(user_id=session["user_id"]).first_or_404()
-
-#     # user_to_action = User.query.filter_by(user_id=bookmarked_user_id).first_or_404()
-#     if action == 'bookmark':
-#         current_user.bookmark_user(bookmarked_user_id)
-#         db.session.commit()
-#     if action == 'unbookmark':
-#         current_user.unbookmark_user(bookmarked_user_id)
-#         db.session.commit()
-        
-#     return redirect("/bookmarks")
-
 @app.route("/bookmarks")
 def see_all_bookmarks():
+    bookmarks = crud.get_all_bookmarks()
     
-    current_user_id = session["user_id"]
-
-    bookmarks = Bookmark.query.filter_by(user_id=current_user_id).all()
+    all_artists = []
+    all_tracks = []
+    all_playlists=[]
+    for bookmark in bookmarks:
+        bookmarked_user_id = bookmark.bookmarked_user_id
+        user_id = bookmark.user_id
         
-    return render_template("bookmarks.html", bookmarks=bookmarks)
+        top_tracks = crud.get_user_tracks(bookmarked_user_id)
+        for track in top_tracks:
+            all_tracks.append(track)
+        top_artists = crud.get_user_artists(bookmarked_user_id)
+        for artist in top_artists:
+            all_artists.append(artist)
+        recent_playlists = crud.get_user_playlists(bookmarked_user_id)
+        for playlist in recent_playlists:
+            all_playlists.append(playlist)
+    
+        artist_comparison = crud.compare_artists(user_id, bookmarked_user_id)
+        track_comparison = crud.compare_tracks(user_id, bookmarked_user_id)
+    
+    return render_template("bookmarks.html", bookmarks=bookmarks, all_artists=all_artists)
 
-"""under construction ************************************************************************************ """
    
 @app.route('/logout')
 def logout():
@@ -307,15 +322,6 @@ def all_users():
     users = crud.get_users()
 
     return render_template("all_users.html", users=users)
-
-@app.route("/bookmarks")
-def show_bookmarks():
-    """View all bookmarks."""
-    
-    
-    bookmarks = crud.get_all_bookmarks()
-
-    return render_template("bookmarks.html", bookmarks=bookmarks)
 
 @app.route("/users/<user_id>")
 def show_user(user_id):

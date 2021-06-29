@@ -6,7 +6,7 @@ import logging
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
-logger = logging.getLogger('examples.create_playlist')
+logger = logging.getLogger('create_playlist')
 logging.basicConfig(level='DEBUG')
 
 

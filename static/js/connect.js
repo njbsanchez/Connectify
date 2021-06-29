@@ -1,5 +1,18 @@
 "use strict";
 
+$('#submit').on('submit', (evt) => {
+  evt.preventDefault();
+
+  const locationCoords = {
+    'lat': $('#latitude').val(),
+    'long': $('#longitude').val()
+  };
+
+  $.post('/update-coords', locationCoords, (res) => {
+    alert(res);
+  });
+});
+
 function initMap() {
   const map = new google.maps.Map($('#map')[0], {
     center: {
@@ -10,7 +23,7 @@ function initMap() {
     zoomControl: true,
     panControl: false,
     streetViewControl: false,
-    zoom: 10,
+    zoom: 12,
     mapTypeId: google.maps.MapTypeId.NONE
   });
   
