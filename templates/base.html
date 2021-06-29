@@ -30,13 +30,7 @@
 
         <title>
             
-            {% block title%}
-              {% for msg in get_flashed_messages() %}
-                <p class="flash-msg">
-                {{ msg }}
-                 </p>
-              {% endfor %}
-            {% endblock %}
+      
         </title>
 
         
@@ -46,6 +40,17 @@
 
     <body>
         <header>
+          <div class="alert alert-primary" role="alert">
+            {% block title%}  
+              {% for msg in get_flashed_messages() %}
+                <p class="flash-msg">
+                {{ msg }}
+                 </p>
+              {% endfor %}
+            {% endblock %}
+          </div>
+              
+
           <nav class="navbar navbar-expand-lg navbar-light bg-light">
               <div class="container-fluid">
                   <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,10 +59,13 @@
                   <div class="collapse navbar-collapse" id="navbarNav">
                       <ul class="navbar-nav">
                           <li class="nav-item">
-                              <a class="nav-link" href="/connect">Connect</a>
+                              <a class="nav-link" href="/connect">Listeners near Me</a>
                           </li>
                           <li class="nav-item">
-                              <a class="nav-link" href="/profile">Profile</a>
+                              <a class="nav-link" href="/bookmarks">Bookmarked Finds</a>
+                          </li>
+                          <li class="nav-item">
+                              <a class="nav-link" href="/profile">My Profile</a>
                           </li>
                           <li class="nav-item">
                               <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Events (coming soon!)</a>

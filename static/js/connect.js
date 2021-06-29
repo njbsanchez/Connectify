@@ -27,7 +27,6 @@ function initMap() {
               alt="groovy_user"
             />
           </div>
-
           <ul class="user-info">
             <li><b>Listener Name: </b>${user.name}</li>
             <li><b>Listener Spotify ID: </b>${user.s_id}</li>
@@ -62,4 +61,3 @@ function initMap() {
     `));
   });
 }
-

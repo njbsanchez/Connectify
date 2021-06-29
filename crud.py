@@ -1,5 +1,5 @@
 """CRUD operations."""
-from model import db, User, connect_to_db, Playlist, Track, Artist
+from model import db, User, connect_to_db, Playlist, Track, Artist, Bookmark
 from flask import session
 import random
 
@@ -135,21 +135,24 @@ def compare_artists(current_user, user_to_compare):
     for artist in my_artists:
         artist_tup = (artist.artist_name, artist.sp_artist_id)
         my_set.add(artist_tup)
-    
+        
     user_artists = Artist.query.filter(Artist.user_id == user_to_compare).all()
     user_set = set()
     
     for artist in user_artists:
         artist_tup = (artist.artist_name, artist.sp_artist_id)
         user_set.add(artist_tup)
-    
+        
     count = len(my_set & user_set)
     my_artists_to_share = my_set - user_set
     new_artists_to_me = user_set - my_set
     new_artists_3 = set(random.choices(list(new_artists_to_me), k=3))
-    artist_similar = my_set & user_set     
+    artist_similar = set(random.choices(list(my_set & user_set), k=3))  
     count_similar = len(artist_similar)
-    similarity_ratio = count / len(my_set)
+    if count_similar == 0:
+        similarity_ratio = 0
+    else:
+        similarity_ratio = count / len(my_set)
     
     artist_comparison = {
         "my_artists_to_share": my_artists_to_share,
@@ -216,3 +219,29 @@ def clear_artists():
     for artist in to_delete:
         db.session.delete(artist)
     db.session.commit()
+    
+def create_bookmark(bookmarked_user_id):
+    
+    user_id = session['user_id']
+    
+    bookmark = Bookmark(
+        user_id=user_id,
+        bookmarked_user_id=bookmarked_user_id)
+    
+    db.session.add(bookmark)
+    db.session.commit()
+
+def delete_bookmark(bookmarked_user_id):
+    
+    to_delete = get_bookmark(bookmarked_user_id)
+    
+    db.session.delete(to_delete)
+    db.session.commit()
+    
+def get_bookmark(bookmarked_user_id):
+    
+    return Bookmark.query.filter(Bookmark.bookmarked_user_id == bookmarked_user_id).first()
+
+def get_all_bookmarks():
+    
+    return Bookmark.query.filter(Bookmark.user_id == session['user_id']).all()

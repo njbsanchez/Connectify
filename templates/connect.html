@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/static/css/users.css">
   <link rel="stylesheet" href="/static/css/connect.css">
 
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="/static/js/mapStyles.js"></script>
   <script src="/static/js/connect.js"></script>
@@ -21,7 +22,7 @@
 <body>
     <main>
         <div class="row">
-            <div class="col-4">
+            <div class="col-lg-4" id="left-container">
                 <div class="container-fluid">
                     <section class="py-5 text-center container">
                         <div class="row py-lg-5">
@@ -37,7 +38,7 @@
                             </div>
                         </div>
                     </section>
-                    <div class="album py-5 bg-light" id="left">       
+                    <div class="album py-5 bg-light">
                         <div class"container">
                           {%for user in users%}
                             <div class="row row-cols-1 g-3">
@@ -53,7 +54,11 @@
                                                 <div class="btn-group text-center">
                                                     <a href="https://open.spotify.com/user/nicojocel?si=fd37a97bcc834b3c" target="_blank" class="btn btn-primary my-2">Spotify Profile</a>
                                                     <a href="/users/{{ user.user_id }}" class="btn btn-primary my-2">Connectify Profile</a>
-                                                    <a href="#" class="btn btn-primary my-2">Bookmark</a>
+                                                    {%if current_user.has_existing_bookmarked_user(user)%}
+                                                        <a href="/bookmark/{{ user.user_id }}/unbookmark" class="btn btn-primary my-2">unbookmark</a>
+                                                        {% else %}
+                                                            <a href="/bookmark/{{ user.user_id }}/bookmark" class="btn btn-primary my-2">bookmark</a>
+                                                        {% endif %}
                                                 </div>
                                             </div>
                                         </div>
@@ -67,10 +72,10 @@
                     </div>
                 </div>
             </div>
-            <div class="col-8">
-              <section class="map">
-                <div id="map"></div>
-              </section>
+            <div class="col-lg-8" id="right-container">
+                    <section class="map">
+                    <div id="map"></div>
+                </div>
             </div>
         </div>
     </main>

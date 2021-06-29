@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %} My Details {% endblock %}
+
+{% block body %}
+
+  <div class = "container">
+
+    <document.getElementById>
+    
+    <div class="container">
+      <h2>Bookmarked Profiles</h2>  
+        <div class="container">
+        </div> 
+      <ul>
+          {% for bookmark in bookmarks %}
+            <li> {{ bookmark.user_id }} -- {{ bookmark.bookmarked_user_id }}</li>
+          {% endfor %}
+      </ul>
+    </div>
+    <div class="container">
+      <h2>Top Artists of Bookmarked Profiles</h2>  
+        <div class="container">
+        </div> 
+      <ul>
+          {% for bookmark in bookmarks %}
+            <li> {{ user.user_id }} -- {{ user.bookmarked_user_id }}</li>
+                {% for bookmark%}
+          {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <a href="/connect" class="btn btn-primary my-2">Back to Connect Map</a>
+
+ {% endblock %}
+

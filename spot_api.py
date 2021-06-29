@@ -1,23 +1,16 @@
 import os
-import crud
-from flask import (
-    Flask,
-    render_template,
-    session,
-    request,
-    redirect,
-    url_for,
-    flash,
-)
-import server
 import json
+from pprint import pprint
+
 # from flask_oauth import OAuth
 from spotipy import Spotify, CacheHandler
-from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
-from pprint import pprint
+
+import crud
+
 
 SPOITFY_CLIENT_ID = os.environ.get("SPOTIFY_CLIENT_ID")
 SPOTIFY_CLIENT_SECRET = os.environ.get("SPOTIFY_CLIENT_SECRET")
+
 
 class CacheSessionHandler(CacheHandler):
     def __init__(self, session, token_key):
@@ -29,25 +22,18 @@ class CacheSessionHandler(CacheHandler):
 
     def save_token_to_cache(self, token_info):
         self.session[self.token_key] = token_info
-        session.modified = True
-
-oauth_manager = SpotifyOAuth(
-    client_id=SPOITFY_CLIENT_ID,
-    client_secret=SPOTIFY_CLIENT_SECRET,
-    redirect_uri="http://localhost:5000/home",
-    scope="user-read-email playlist-read-private playlist-read-collaborative user-top-read",
-    cache_handler=CacheSessionHandler(session, "spotify_token"))
+        self.session.modified = True
+        
 
 def get_sp_oauth(o_auth):
-    
-    if not o_auth.validate_token(o_auth.get_cached_token()):
-        flash("Please authenticate your Spotify profile in order to proceed.")
-        return redirect("/")
-    else:
-        sp_oauth = Spotify(auth_manager=oauth_manager)
+    print(f"Cached token: {o_auth.get_cached_token()}")
+   
+    if o_auth.validate_token(o_auth.get_cached_token()):
+        sp_oauth = Spotify(auth_manager=o_auth)
         return sp_oauth
+    
 
-def update_spotify_info():
+def update_spotify_info(oauth_manager):
 
     sp_oauth = get_sp_oauth(oauth_manager)
    
@@ -76,7 +62,7 @@ def update_spotify_info():
     
     return user_info
 
-def get_playlists_from_sp():
+def get_playlists_from_sp(oauth_manager):
     """
     From Spotify, get name, id, and put into a list called "playlists".
     To be used for "edit my top playlist" page
@@ -103,18 +89,18 @@ def get_playlists_from_sp():
     
     return playlists
 
-def update_my_playlists(user_id):
+def update_my_playlists(user_id, oauth_manager):
     
     crud.clear_playlists()
     
-    playlists = get_playlists_from_sp()
+    playlists = get_playlists_from_sp(oauth_manager)
     
     for playlist in playlists:
         crud.add_playlist(playlist["sp_playlist_id"], playlist["s_id"], playlist["playlist_name"], playlist["play_url"], playlist["playlist_desc"], user_id)
         
     print("************* successfully uploaded all playlists to current user ************")
 
-def get_tracks_from_sp():
+def get_tracks_from_sp(oauth_manager):
     
     sp_oauth = get_sp_oauth(oauth_manager)
 
@@ -139,19 +125,19 @@ def get_tracks_from_sp():
     
     return tracks
 
-def update_my_tracks(user_id):
+def update_my_tracks(user_id, oauth_manager):
     """to update tracks in user's database"""
     
     crud.clear_tracks()
     
-    tracks = get_tracks_from_sp()
+    tracks = get_tracks_from_sp(oauth_manager)
     
     for track in tracks:
         crud.add_track(user_id, track["track_name"], track["sp_track_id"], track["artist_name"], track["artist_id"])
         
     print("************* successfully uploaded all playlists to current user ************")
                                                                
-def get_artists_from_sp():
+def get_artists_from_sp(oauth_manager):
     
     sp_oauth = get_sp_oauth(oauth_manager)
     
@@ -175,12 +161,12 @@ def get_artists_from_sp():
 
     return artists
 
-def update_my_artists(user_id):
+def update_my_artists(user_id, oauth_manager):
     """to update tracks in user's database"""
     
     crud.clear_artists()
     
-    artists = get_artists_from_sp()
+    artists = get_artists_from_sp(oauth_manager)
     
     for artist in artists:
         crud.add_artist(user_id, artist["sp_artist_id"], artist["artist_name"])

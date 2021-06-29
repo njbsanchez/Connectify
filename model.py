@@ -30,42 +30,69 @@ class User(db.Model):
                         autoincrement=True, 
                         primary_key=True)
     name = db.Column(db.String, 
-                      nullable=False)
+                        nullable=False)
     email = db.Column(db.String, 
-                      nullable=False, 
-                      unique=True)
+                        nullable=False, 
+                        unique=True)
     password = db.Column(db.String, 
-                      nullable=False)
+                        nullable=False)
     s_id = db.Column(db.String,
-                     nullable=False)
+                        nullable=False)
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
     recent_activity = db.Column(db.DateTime)
+    
+    bookmarked = db.relationship('Bookmark', foreign_keys='Bookmark.bookmarked_user_id', backref='bookmarked_user')
+    bookmarks = db.relationship('Bookmark', foreign_keys='Bookmark.user_id', backref='user')
+    
+    tracks = db.relationship('Track', backref='user')
+
+    
+    def bookmark_user(self, user):
+        user = int(user)
+        if not self.has_bookmarked_user(user):
+            bookmark = Bookmark(user_id=self.user_id, bookmarked_user_id=user)
+            db.session.add(bookmark)
+
+    def unbookmark_user(self, user):
+        user = int(user)
+        if self.has_bookmarked_user(user):
+            Bookmark.query.filter_by(
+                user_id=self.user_id,
+                bookmarked_user_id=user).delete()
+
+    def has_bookmarked_user(self, user):
+        return Bookmark.query.filter(
+            Bookmark.user_id == self.user_id,
+            Bookmark.bookmarked_user_id == user).count() > 0
+    
+    def has_existing_bookmarked_user(self, user):
+        return Bookmark.query.filter(
+            Bookmark.user_id == self.user_id,
+            Bookmark.bookmarked_user_id == user.user_id).count() > 0
       
     def __repr__(self):
         return f'< user_id = {self.user_id} name = {self.name} email = {self.email} >'
-    
+
 class Track(db.Model):
     """Top 50 tracks (long term)"""
     
     __tablename__ = "tracks"
     
     track_id = db.Column(db.Integer,
-                        autoincrement=True,
-                        primary_key=True)
+                            autoincrement=True,
+                            primary_key=True)
     track_name = db.Column(db.String,
-                          nullable=False)
+                            nullable=False)
     sp_track_id = db.Column(db.String,
-                          nullable=False)
+                            nullable=False)
     artist_name = db.Column(db.String,
-                          nullable=False)
+                            nullable=False)
     artist_id = db.Column(db.String,
-                          nullable=False)
+                            nullable=False)
     user_id = db.Column(db.ForeignKey('users.user_id'),
-                              nullable=False)
+                            nullable=False)
 
-    
-    track = db.relationship('User', backref='tracks')
     
     def __repr__(self):
         return f'< track_id = {self.track_id} track_name = {self.track_name} >'
@@ -79,11 +106,11 @@ class Artist(db.Model):
                         autoincrement=True,
                         primary_key=True)
     sp_artist_id = db.Column(db.String,
-                          nullable=False)
+                        nullable=False)
     artist_name = db.Column(db.String,
-                          nullable=False)
+                        nullable=False)
     user_id = db.Column(db.ForeignKey('users.user_id'),
-                              nullable=True)
+                        nullable=True)
      
     artist = db.relationship('User', backref='artists')
 
@@ -102,23 +129,39 @@ class Playlist(db.Model):
                             autoincrement=True, 
                             primary_key=True)
     sp_playlist_id = db.Column(db.String, 
-                              nullable=False)
+                            nullable=False)
     s_id = db.Column(db.String, 
-                             nullable=False)
+                            nullable=False)
     playlist_name = db.Column(db.String, 
-                              nullable=False)
+                            nullable=False)
     user_id = db.Column(db.ForeignKey('users.user_id'),
-                              nullable=True)
+                            nullable=True)
     play_desc = db.Column(db.String)
     play_url = db.Column(db.String, 
-                              nullable=False)
+                            nullable=False)
     
     playlist = db.relationship('User', backref='playlists')
 
     def __repr__(self):
         return f'< playlist_id = {self.playlist_id} playlist_name = {self.playlist_name} >'
 
-
+    
+class Bookmark(db.Model):
+    """A bookmarked friend"""
+    
+    __tablename__ = "bookmarks"
+    
+    bookmark_id = db.Column(db.Integer,
+                                autoincrement=True, 
+                                primary_key=True)
+    user_id = db.Column(db.ForeignKey('users.user_id'),
+                                nullable=False)
+    bookmarked_user_id = db.Column(db.ForeignKey('users.user_id'),
+                                nullable=False)
+    
+    def __repr__(self):
+        return f'< bookmark_id = {self.bookmark_id} || {self.user_id} has bookmarked {self.bookmarked_user_id} >'
+    
 
 if __name__ == '__main__':
     from server import app
