@@ -19,25 +19,30 @@ from flask import (
 )
 import json
 
+
 # from flask_oauth import OAuth
-# from spotipy import Spotify, CacheHandler
+from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 # import spotipy
 
 import spot_api as sp
+from create_playlist import SpotifyClient
 
-SPOITFY_CLIENT_ID = sp.SPOITFY_CLIENT_ID
-SPOTIFY_CLIENT_SECRET = sp.SPOTIFY_CLIENT_SECRET
+SPOITFY_CLIENT_ID = os.environ.get("SPOTIFY_CLIENT_ID")
+SPOTIFY_CLIENT_SECRET = os.environ.get("SPOTIFY_CLIENT_SECRET")
 
 app = Flask(__name__)
 app.secret_key = "DEV"
 app.jinja_env.undefined = StrictUndefined
+client_credentials_manager = SpotifyClientCredentials()
 oauth_manager = SpotifyOAuth(
     client_id=SPOITFY_CLIENT_ID,
     client_secret=SPOTIFY_CLIENT_SECRET,
-    redirect_uri="http://localhost:5000/auth",
-    scope="user-read-email playlist-read-private playlist-read-collaborative user-top-read",
-    cache_handler=sp.CacheDBHandler(session))
+    redirect_uri="http://localhost:5000/spotify-callback",
+    scope="user-read-email playlist-read-private playlist-modify-public playlist-modify-private playlist-read-collaborative user-top-read",
+    cache_handler=sp.CacheSessionHandler(session, "spotify_token_info"))
+spotify = Spotify(auth_manager=oauth_manager)
+spotify_cred = Spotify(client_credentials_manager=client_credentials_manager)
 
 @app.route("/coming_soon")
 def coming_soon():
@@ -49,91 +54,52 @@ def coming_soon():
 def landing():
     """View Landing page"""
     
-    if 'user_id' in session:
+    if 'user_id' in session and 'spotify_token_info' in session:
         return redirect('/connect')
     
     return render_template("landing.html")
 
 
-@app.route("/login-with-spotify")
+@app.route("/login-with-spotify", methods=["POST"])
 def redirect_to_spotify_auth():
+    """ # should_remember = request.args.get("remember_me")
+    # set session to permanent (will cause session to last for 31 days)
+    # session.permanent = True"""
+    remember_me = request.args.get('remember-me')
+    if remember_me:
+        session.permanent = True
+        
     return redirect(oauth_manager.get_authorize_url())
 
     
 @app.route("/spotify-callback")
 def handle_redirect_after_spotify_auth():
-    pass
-
-"""
-get code from request.args ---> use code to get an access token
-(oauth manager.get_access_token)
-authenticate with spotify
-sp_oauth = Spotify(auth_manager=o_auth)
-use spotify to get user's email
-if user already exists in database:
-    log in
-else: 
-    create user
-        add userid to session
-        make sure token is saved spotify token info
-"""
-
-@app.route("/create")
-def create_new_account():
-    """Show new account form."""
+    "Checks if authentication was provided by user. If approved, code checks if user exists in db and saves user to session.. If not, creates a user and saves to session. "
     
-    return render_template("create_profile_form.html")
+    spotify_cred = Spotify(client_credentials_manager=client_credentials_manager)
+    code = request.args.get("code")
+    
+    if not code:
+        alert("Spotify Authentication is required in order to access the app. Please try again.")
+        return redirect("/")
+    
+    oauth_manager.get_access_token(code, check_cache=False)
+    spotify_user_info = spotify.current_user()
+    print(spotify_user_info)
 
-@app.route("/create-user", methods=["POST"])
-def register_user():
-    """Create a new user."""
+    user = User.query.filter_by(email=spotify_user_info["email"]).first()
     
-    email = request.form.get("email")
-    password = request.form.get("password")
-    name = request.form.get("name")
-    s_id = request.form.get("s_id") 
-    
-    user = crud.get_user_by_email(email)
-    
-    if user:
-        flash("An account already exists for that email. Please sign in or create an account using a different email.")
-    else:
-        print(email, password, name, s_id)
-        crud.create_user(email, password, name, s_id)
-    
-    return redirect("/") #back to /auth
+    if not user:
+        name = spotify_user_info['display_name']
+        s_id = spotify_user_info['id']
+        email = spotify_user_info['email']
+        
+        crud.create_user(email, name, s_id)
+        return redirect("/profile")
 
-
-@app.route("/auth")
-def authenticate():
-    code = request.args.get('code')
-    next = request.args.get('next')
-
-    if code:
-        oauth_manager.get_access_token(code)
+    session["user_id"] = user.user_id
     
-    if oauth_manager.validate_token(oauth_manager.get_cached_token()):
-        return redirect(next)
-
-
-@app.route("/login", methods=["POST"])
-def process_login():
-    """Process user login."""
-
-    email = request.form["email"]
-    password = request.form["password"]
-    
-    user = crud.get_user_by_email(email)            #check if user exists in database
-    
-    if not user or user.password != password:
-        flash("The email or password you entered was incorrect.")
-    else:
-        session["user_email"] = user.email
-        session["user_id"] = user.user_id
-        flash(f"Welcome back, {user.name}!")
-        return redirect("/connect")
-    
-    return redirect("/")  #back to auth
+    return redirect("/connect")
 
 @app.route("/profile")
 def show_profile():
@@ -145,18 +111,8 @@ def show_profile():
     print(f"SESSION: {session}")
     
     user_id = session["user_id"]
-    if 'code' in request.args:
-        oauth_manager.get_access_token(request.args['code'])      
     
-    sp_oauth = sp.get_sp_oauth(oauth_manager)
-    
-    if not sp_oauth:
-        flash("Please authenticate your Spotify profile in order to proceed.")
-
-        oauth_manager.redirect_uri = "http://localhost:5000/profile"
-        return redirect(oauth_manager.get_authorize_url())
-    
-    sp_playlists = sp_oauth.current_user_playlists(limit=3)
+    sp_playlists = spotify.current_user_playlists(limit=3)
    
     playlists = []
     
@@ -177,9 +133,9 @@ def show_profile():
         
     print("************* successfully uploaded all playlists to current user ************")
     
-    sp.update_my_playlists(user_id, oauth_manager)                                   
-    sp.update_my_tracks(user_id, oauth_manager)
-    sp.update_my_artists(user_id, oauth_manager)
+    sp.update_my_playlists(user_id, spotify)                                   
+    sp.update_my_tracks(user_id, spotify)
+    sp.update_my_artists(user_id, spotify)
        
     user = crud.get_user_by_id(user_id)
     top_tracks = crud.get_user_tracks(user_id)
@@ -200,8 +156,6 @@ def connect_users():
 @app.route("/api/usersinfo")
 def user_info():
     """JSON information about users info."""
-    
-    # users_in_db = crud.get_users()
     
     users = [
         {
@@ -282,32 +236,105 @@ def bookmark_action(bookmarked_user_id, action):
         
     return redirect("/bookmarks")
 
-@app.route("/bookmarks")
-def see_all_bookmarks():
+@app.route("/create-playlist/<similarity_cat>")
+def show_playlist_creator(similarity_cat):
+    tracks = [] 
+    bookmarked_users = []
     bookmarks = crud.get_all_bookmarks()
     
-    all_artists = []
-    all_tracks = []
-    all_playlists=[]
     for bookmark in bookmarks:
+        track_comparison = crud.compare_tracks(bookmark.user_id, bookmark.bookmarked_user_id)
+        bookmarked_users.append(bookmark)
+        for track in (crud.get_user_tracks(bookmark.bookmarked_user_id)):
+            tracks.append(track)
+    
+    return render_template("create_playlist.html", tracks=tracks)
+
+@app.route("/create-playlist/<similarity_cat>", methods=["POST"])
+def create_playlist(similarity_cat):
+   
+    tracks = [] 
+    bookmarked_users = []
+    bookmarks = crud.get_all_bookmarks()
+    
+    for bookmark in bookmarks:
+        track_comparison = crud.compare_tracks(bookmark.user_id, bookmark.bookmarked_user_id)
+        bookmarked_users.append(bookmark)
+        for track in (crud.get_user_tracks(bookmark.bookmarked_user_id)):
+            tracks.append(track)
+            
+    playlist_name = request.form.get("playlist_name")
+    tok = session["spotify_token_info"].get("access_token")
+    # print(tok, "********************** THIS IS TOK")
+    spotify_client = SpotifyClient(tok, crud.get_sid_by_id(session["user_id"]))
+    playlist = spotify_client.create_playlist(playlist_name)
+    print(f"Playlist '{playlist_name}' was created successfully.")
+    print (playlist, "#            ##################################")
+    spotify_client.populate_playlist(playlist, tracks)
+    print(f"Tracks were successfully uploaded to playlist '{playlist_name}'.")
+    current_user = crud.get_user_by_id(session["user_id"])
+    
+    return redirect("/")
+    
+    
+
+@app.route("/bookmarks")
+def see_all_bookmarks():
+   
+    current_user = crud.get_user_by_id(session["user_id"])
+    
+    bookmarks = crud.get_all_bookmarks()
+    
+    # sim_by_artist = {"high", "med", "low", "nada"}
+    sim_by_track = {}
+    sim_by_track["high"] = [] 
+    sim_by_track["med"] = []
+    sim_by_track["low"] = []
+    sim_by_track["nada"] = []
+    
+    sim_by_artist = {}
+    sim_by_artist["high"] = [] 
+    sim_by_artist["med"] = []
+    sim_by_artist["low"] = []
+    sim_by_artist["nada"] = []
+    
+    artists = {}
+    artists["high"] = [] 
+    artists["med"] = []
+    artists["low"] = []
+    artists["nada"] = []
+    
+    tracks = {}
+    tracks["high"] = [] 
+    tracks["med"] = []
+    tracks["low"] = []
+    tracks["nada"] = []
+    
+    for bookmark in bookmarks:
+        
         bookmarked_user_id = bookmark.bookmarked_user_id
         user_id = bookmark.user_id
         
-        top_tracks = crud.get_user_tracks(bookmarked_user_id)
-        for track in top_tracks:
-            all_tracks.append(track)
-        top_artists = crud.get_user_artists(bookmarked_user_id)
-        for artist in top_artists:
-            all_artists.append(artist)
-        recent_playlists = crud.get_user_playlists(bookmarked_user_id)
-        for playlist in recent_playlists:
-            all_playlists.append(playlist)
-    
-        artist_comparison = crud.compare_artists(user_id, bookmarked_user_id)
         track_comparison = crud.compare_tracks(user_id, bookmarked_user_id)
+        
+        sim_by_track[track_comparison["similarity_cat"]].append(bookmark)
+        
+        for track in (crud.get_user_tracks(bookmarked_user_id)):
+            tracks[track_comparison["similarity_cat"]].append(track)
+       
+        artist_comparison = crud.compare_artists(user_id, bookmarked_user_id)
+        
+        sim_by_artist[artist_comparison["similarity_cat"]].append(bookmark)
+        
+        for artist in (crud.get_user_artists(bookmarked_user_id)):
+            artists[artist_comparison["similarity_cat"]].append(artist)
+            
+    """Playlists created"""
     
-    return render_template("bookmarks.html", bookmarks=bookmarks, all_artists=all_artists)
+            
+    return render_template("bookmarks.html", bookmarks=bookmarks, sim_by_track=sim_by_track, current_user=current_user, artists=artists, tracks=tracks)
 
+# topsts.append(playlist)
    
 @app.route('/logout')
 def logout():
@@ -328,15 +355,31 @@ def show_user(user_id):
     """Show details on a particular user."""
 
     user = crud.get_user_by_id(user_id)
+    spotify_user = spotify_cred.user(user.s_id)
     top_tracks = crud.get_user_tracks(user_id)
     top_artists = crud.get_user_artists(user_id)
-    recent_playlists = crud.get_user_playlists(user_id)
     artist_comparison = crud.compare_artists(session["user_id"],user_id)
     track_comparison = crud.compare_tracks(session["user_id"],user_id)
     artist_count = len(top_artists)
     track_count = len(top_tracks)
+    playlist_dict = spotify_cred.user_playlists(user.s_id)
+    playlists = playlist_dict["items"][:3]
+    num_playlists = len(playlist_dict["items"])
+    avg_ratio = (artist_comparison["similarity_ratio"] + track_comparison["similarity_ratio"])/2
 
-    return render_template("user_profile.html", user=user, top_artists=top_artists, top_tracks=top_tracks, recent_playlists=recent_playlists, artist_comparison=artist_comparison, track_comparison=track_comparison, artist_count=artist_count, track_count=track_count)
+    return render_template("user_profile.html", 
+                           num_playlists=num_playlists, 
+                           user=user, 
+                           top_artists=top_artists, 
+                           spotify_user=spotify_user, 
+                           top_tracks=top_tracks, 
+                           artist_comparison=artist_comparison, 
+                           track_comparison=track_comparison, 
+                           artist_count=artist_count, 
+                           track_count=track_count, 
+                           playlists=playlists,
+                           avg_ratio=avg_ratio
+                           )
 
 @app.route("/comparison.json")
 def get_comparison_data(user_id):

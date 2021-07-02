@@ -5,67 +5,60 @@
 
 {% extends 'base.html' %}
 
-{% block title %}{{ user.name }}'s Page{% endblock %}
+<title>{{ user.name }}'s Page</title>
 
 {% block head %}
 <head>
-  {# ChartJS #}
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
   {# bootstrap #}
-  <meta charset="utf-8">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
+    <link rel="stylesheet" href="/static/css/user_profile.css"></link>
+    <meta name="viewport" content="width=1100">
   </head>
 {% endblock %}
 
 {% block body %}
 <body>
   
-  <document.getElementById>
-  <div class="row">
+  <div class="row h-100">
      <!-- Profile widget -->
-    <div class="col-3">
+    <div class="col-4 overflow-hidden">
         <!-- user info right column panel-->
-        <div class="bg-white shadow rounded overflow-hidden">
-         <div class="px-5 pt-4 pb-0 cover">
-            <div class="media align-items-end profile-head">
-                <div class="profile mr-3 text-center"><img src="https://i.guim.co.uk/img/media/dd3882c4ad0fd11a14cffc7e5edaabe5ce8a8b53/0_85_1077_646/master/1077.jpg?width=700&quality=85&auto=format&fit=max&s=c906598d7b435814a7e49a5ee4779c2f" alt="{{ user.name }}'s profile image" width="200" class="rounded mb-2 img-thumbnail">
-                    <div class="media-body mb-5 text-black">
-                        <h3 class="mt-0 mb-0 text-center">{{ user.name }}</h3>
-                        <p></p>
-                        <p class="small mb-4 text-center">Last Played at {{ user.recent_activity }}</p>
+        <div class="bg-dark">
+            <div class="demo-1 container-fluid d-flex justify-content-center align-items-center">
+                <div class="col-4">
+                    <img src="{{ spotify_user["images"][0]["url"] }}" alt="{{ user.name }}'s profile image" class="shadow rounded-circle" alt="Cinque Terre" width="100%" height="100%"/>
+                </div>
+                <div class="col-8">
+                    <div class="row">
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    </div>
+                    <div class="row">
+                        <h2>{{ spotify_user["display_name"] }}</h2>
+                        <p>   {{ num_playlists }} Playlists - {{ spotify_user["followers"]["total"] }} Followers</p>
                     </div>
                 </div>
             </div>
-            <div class="bg-light p-4 d-flex justify-content-center text-center">
-                  <ul class="list-inline mb-0">
-                      <li class="list-inline-item">
-                          <h5 class="font-weight-bold mb-0 d-block">215</h5><small class="text-muted"> <i class="fas fa-image mr-1"></i>Playlists</small>
-                      </li>
-                      <li class="list-inline-item">
-                          <h5 class="font-weight-bold mb-0 d-block">745</h5><small class="text-muted"> <i class="fas fa-user mr-1"></i>Followers</small>
-                      </li>
-                      <li class="list-inline-item">
-                          <h5 class="font-weight-bold mb-0 d-block">340</h5><small class="text-muted"> <i class="fas fa-user mr-1"></i>Following</small>
-                      </li>
-                  </ul>
+            <div class="container align-items-center">
+                <a href="{{ spotify_user["external_urls"]["spotify"] }}" target="_blank" class="btn btn-primary my-2">Spotify Profile</a>
+                {%if user.has_existing_bookmarked_user(user)%}
+                    <a href="/bookmark/{{ user.user_id }}/unbookmark" class="btn btn-primary my-2">Unbookmark User</a>
+                    {% else %}
+                        <a href="/bookmark/{{ user.user_id }}/bookmark" class="btn btn-primary my-2">Bookmark User</a>
+                    {% endif %}
             </div>
-            <div class="px-4 py-3">
-                <h5 class="mb-0 text-center">About</h5>
-                <p></p>
-                <div class="p-4 rounded shadow-sm bg-light">
-                    <p class="font-italic mb-0">Web Developer</p>
-                    <p class="font-italic mb-0">Lives in New York</p>
-                    <p class="font-italic mb-0">Photographer</p>
-                </div>
-            </div>
-            <div class="py-4 px-4">
-                <div class="d-flex align-items-center justify-content-between mb-3 text-center">
-                    <h5 class="mb-0">Playlists I've Been Binging...</h5>
+            <div class="container w-10 text-center">
+                <div class="d-flex align-items-center text-center">
+                    <h5 class="mb-0 text-center">Playlists I've Been Binging...</h5>
                 </div>
                 <div class"container">
                     <div id="carouselArtistIndicators" class="carousel slide" data-ride="carousel">
@@ -76,19 +69,16 @@
                     </ol>
                     <div class="carousel-inner">
                         <div class="carousel-item active">
-                            <img class="d-block w-100px h-100px" src="https://placeimg.com/1080/500/animals" alt="First slide">
+                            <img class="d-block" width="80%" height="80%" src="https://i.ibb.co/L591TYT/play-thumb.png" alt="first slide">
                             <div class="carousel-caption d-none d-block">
-                                <h5>{{user.name}}'s Playlists</h5>
-                                <p>Click through my playlists >>></p>
+                                <p> Click Through >>> </p>
                             </div>
                         </div>
-                        {%for playlist in recent_playlists%}
+                        {%for playlist in playlists%}
                           <div class="carousel-item">
-                              <img class="d-block w-100px h-100px" src="https://placeimg.com/1080/500/arch" alt="Second slide">
+                              <img class="d-block" width="80%" height="80%" src="{{ playlist['images'][0]['url']}}" alt="{{ playlist['name'] }} slide">
                               <div class="carousel-caption d-none d-block">
-                                  <h4>{{ playlist.playlist_name }}</h4>
-                                  <h5>{{ playlist.play_desc }}</h5>
-                                  <h5>{{ playlist.play_url }}</h5>
+                                  <a class="btn btn-success" href=" {{ playlist['external_urls'].get('spotify') }}" target="_blank">{{ playlist['name'] }}</a>
                               </div>
                           </div>
                         {%endfor%}
@@ -106,85 +96,100 @@
           </div>
           </div>
         </div>
-    </div>
-    <div class="col-9">
-        <div class="row col-12 px-2 mb-2 py-2">
-            <div class="bg-white shadow rounded overflow-hidden">
-                <p> Compatibility </p>
+    <div class="col-8">
+        <div class="row">
+            <div class="bg-white">
+                <div class="row">
+                    <div class="col-4">
+                        <div class="row text-center"><p id="avg_ratio">{{avg_ratio}}</p></row>
+                        <h4>Percent Similarity based on Average Top Artists and Top Tracks</h4>
+                        <div class="row col-12">
+                            <table class="center">
+                            <tr>
+                                <td>{{artist_comparison["similarity_ratio"]}}</td>
+                                <td>Percent Similarity based on Top Artists</td>
+                            </tr>
+                            <tr>
+                                <td>{{track_comparison["similarity_ratio"]}}</td>
+                                <td>Percent Similarity based on Top Tracks</td>
+                            </tr>
+                            </table>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="col-8">
+                        <p> Compatibility </p>
+                        <ul>
+                        <h3>Similar Artists</h3>
+                            {% for artist in artist_comparison.artist_similar %}
+                                <li> {{ artist[0] }}</li>
+                            {% endfor %}
+                        <h3>{{user.name}}'s Favorite Artists You Should Check Out!</h3>
+                            {% for artist in artist_comparison.new_artists_to_me %}
+                                <li> {{ artist[0] }}</li>
+                            {% endfor %}
+                        <h3></h3>
+                        <h3>- - - - - - -- </h3>
+                        <h3></h3>
+                        <h3>Similar Tracks</h3>
+                            {% for track in track_comparison.track_similar %}
+                                <li> {{ track[0] }}</li>
+                            {% endfor %}
+                        <h3>{{user.name}}'s Favorite Tracks You Should Check Out!</h3>
+                            {% for track in track_comparison.new_tracks_to_me %}
+                                <li> {{ track[0] }}</li>
+                            {% endfor %}
+                        <h3></h3>
+                        </ul>
+                </div>
+                </div>
             </div> 
         </div>
-        <div class="row col-12 px-0 mb-2">
-            <div class="col-6 mb-2">
-                <div class="bg-white shadow rounded overflow-hidden text-center">
-                    <h2>Top Artists</h2>  
-                    <div class="container">
-                      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                          {% for artist in top_artists %}
-                          <div class="col">
-                            <div class="card shadow-sm">
-                              <svg class="bd-placeholder-img card-img-top" width="100%" height="50" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+        <div class="row col-12">
+            <div class="bg-white shadow rounded overflow-hidden text-center">
+                <h2>Top Artists</h2>  
+                <div class="container">
+                    <div class="row">
+                        {% for artist in top_artists[:9] %}
+                        <div class="col">
+                        <div class="card shadow-sm">
+                            <svg class="bd-placeholder-img card-img-top" width="100%" height="50" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
 
-                              <div class="card-body">
-                                <p class="card-text">{{ artist.artist_name }}</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                  <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                                  </div>
-                                  <small class="text-muted">9 mins</small>
+                            <div class="card-body">
+                            <p class="card-text">{{ artist.artist_name }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
                                 </div>
-                              </div>
+                                <small class="text-muted">9 mins</small>
                             </div>
-                          </div>
-                          {%endfor%}
-                      </div>
-                    </div> 
-                </div>
-             </div>   
-             <div class="col-6 mb-2">
-                <div class="bg-white shadow rounded overflow-hidden">
-                    <h2>Top 10 Tracks</h2>  
-                    <ul>
-                        {% for track in top_tracks %}
-                          <li> {{ track.track_name }} -- {{ track.artist_name }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-              </div>
-          </div>
-        <div class="row col-12 px-2 mb-2">  
+                            </div>
+                        </div>
+                        </div>
+                        {%endfor%}
+                    </div>
+                </div> 
+            </div>  
+        <div class="row col-12>
+            <div class="bg-white shadow rounded overflow-hidden text-center">
+                <h2>Top 10 Tracks</h2>  
+                
+                <ul>
+                    {% for track in top_tracks[:5] %}
+                        
+                        <iframe src="https://open.spotify.com/embed/track/{{ track.sp_track_id }}" width=100 height=100 frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="row col-12">  
             <div class="bg-white shadow rounded overflow-hidden">
           <h2>Calculate Comparisons</h2>  
 
-          <ul>
-              <h3>Similar Artists</h3>
-                {% for artist in artist_comparison.artist_similar %}
-                    <li> {{ artist[0] }}</li>
-                {% endfor %}
-              <h3>{{user.name}}'s Favorite Artists You Should Check Out!</h3>
-                {% for artist in artist_comparison.new_artists_to_me %}
-                    <li> {{ artist[0] }}</li>
-                  {% endfor %}
-              <h3></h3>
-              <h3>- - - - - - -- </h3>
-              <h3></h3>
-              <h3>Similar Tracks</h3>
-                {% for track in track_comparison.track_similar %}
-                    <li> {{ track[0] }}</li>
-                {% endfor %}
-              <h3>{{user.name}}'s Favorite Tracks You Should Check Out!</h3>
-                {% for track in track_comparison.new_tracks_to_me %}
-                    <li> {{ track[0] }}</li>
-                  {% endfor %}
-              <h3></h3>
-          </ul>
-
-          <div>
-            <canvas id="comparison-chart"></canvas>
-          </div>
+          
 
           <p> <a href="/users">Back to all Users</a> </p>
-          <script src="/static/js/chart.js"></script>
 </body>
 {% endblock %}
 

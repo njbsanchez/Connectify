@@ -11,25 +11,109 @@
     <div class="container">
       <h2>Bookmarked Profiles</h2>  
         <div class="container">
-        </div> 
-      <ul>
-          {% for bookmark in bookmarks %}
-            <li> {{ bookmark.user_id }} -- {{ bookmark.bookmarked_user_id }}</li>
-          {% endfor %}
-      </ul>
+            <div class="album py-5 bg-light">
+                <h3> High Similarity </h3> <h5>(based on Songs)</h5>
+                <a href="/create-playlist/high" class="btn btn-primary my-2">Create Playlist Based High Compatibility</a>
+                <div class="row text-center">
+                          {% for bookmark in sim_by_track["high"] %}
+                            <div class="col-md-4 text-center">
+                                <div class="card mb-4 box-shadow">
+                                    <img class="card-img-top text-center" width="225px" height="225px" src="https://i.guim.co.uk/img/media/dd3882c4ad0fd11a14cffc7e5edaabe5ce8a8b53/0_85_1077_646/master/1077.jpg?width=700&quality=85&auto=format&fit=max&s=c906598d7b435814a7e49a5ee4779c2f" alt="{{ bookmark.bookmarked_user.name }}'s profile image" preserveAspectRatio="xMidYMid slice" focusable="true">
+                                    <div class="card-body text-center">
+                                        <p class"card-text text-center">
+                                            <h4>{{ bookmark.bookmarked_user.name }}</h4>
+                                        </p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group text-center">
+                                                <a href="https://open.spotify.com/user/nicojocel?si=fd37a97bcc834b3c" target="_blank" class="btn btn-primary my-2">Spotify Profile</a>
+                                                <a href="/users/{{ bookmark.bookmarked_user_id }}" class="btn btn-primary my-2">Connectify Profile</a>
+                                                <a href="/bookmark/{{ bookmark.bookmarked_user_id }}/unbookmark" class="btn btn-primary my-2">unbookmark</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          {% endfor %}
+                </div>
+                <h3> Medium Similarity </h3> <h5>(based on Songs)</h5>
+                <a href="/create-playlist/low" class="btn btn-primary my-2">Create Playlist Based Medium Compatibility</a>
+                <div class="row text-center">
+                          {% for bookmark in sim_by_track["med"] %}
+                            <div class="col-md-4 text-center">
+                                <div class="card mb-4 box-shadow">
+                                    <img class="card-img-top text-center" width="225px" height="225px" src="https://i.guim.co.uk/img/media/dd3882c4ad0fd11a14cffc7e5edaabe5ce8a8b53/0_85_1077_646/master/1077.jpg?width=700&quality=85&auto=format&fit=max&s=c906598d7b435814a7e49a5ee4779c2f" alt="{{ bookmark.bookmarked_user.name }}'s profile image" preserveAspectRatio="xMidYMid slice" focusable="true">
+                                    <div class="card-body text-center">
+                                        <p class"card-text text-center">
+                                            <h4>{{ bookmark.bookmarked_user.name }}</h4>
+                                        </p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group text-center">
+                                                <a href="https://open.spotify.com/user/nicojocel?si=fd37a97bcc834b3c" target="_blank" class="btn btn-primary my-2">Spotify Profile</a>
+                                                <a href="/users/{{ bookmark.bookmarked_user_id }}" class="btn btn-primary my-2">Connectify Profile</a>
+                                                <a href="/bookmark/{{ bookmark.bookmarked_user_id }}/unbookmark" class="btn btn-primary my-2">unbookmark</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          {% endfor %}
+                </div>
+                <h3> Low Similarity </h3> <h5>(based on Songs)</h5>
+                <a href="/create-playlist/low" class="btn btn-primary my-2">Create Playlist Based Low Compatibility</a>
+
+                <div class="row text-center">
+                          {% for bookmark in sim_by_track["low"] %}
+                            <div class="col-md-4 text-center">
+                                <div class="card mb-4 box-shadow">
+                                    <img class="card-img-top text-center" width="225px" height="225px" src="https://i.guim.co.uk/img/media/dd3882c4ad0fd11a14cffc7e5edaabe5ce8a8b53/0_85_1077_646/master/1077.jpg?width=700&quality=85&auto=format&fit=max&s=c906598d7b435814a7e49a5ee4779c2f" alt="{{ bookmark.bookmarked_user.name }}'s profile image" preserveAspectRatio="xMidYMid slice" focusable="true">
+                                    <div class="card-body text-center">
+                                        <p class"card-text text-center">
+                                            <h4>{{ bookmark.bookmarked_user.name }}</h4>
+                                        </p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group text-center">
+                                                <a href="https://open.spotify.com/user/nicojocel?si=fd37a97bcc834b3c" target="_blank" class="btn btn-primary my-2">Spotify Profile</a>
+                                                <a href="/users/{{ bookmark.bookmarked_user_id }}" class="btn btn-primary my-2">Connectify Profile</a>
+                                                <a href="/bookmark/{{ bookmark.bookmarked_user_id }}/unbookmark" class="btn btn-primary my-2">unbookmark</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          {% endfor %}
+                </div>
+                <h3> No Similarity </h3> <h5>(based on Songs)</h5>
+                <div class="row text-center">
+                          {% for bookmark in sim_by_track["nada"] %}
+                            <div class="col-md-4 text-center">
+                                <div class="card mb-4 box-shadow">
+                                    <img class="card-img-top text-center" width="225px" height="225px" src="https://i.guim.co.uk/img/media/dd3882c4ad0fd11a14cffc7e5edaabe5ce8a8b53/0_85_1077_646/master/1077.jpg?width=700&quality=85&auto=format&fit=max&s=c906598d7b435814a7e49a5ee4779c2f" alt="{{ bookmark.bookmarked_user.name }}'s profile image" preserveAspectRatio="xMidYMid slice" focusable="true">
+                                    <div class="card-body text-center">
+                                        <p class"card-text text-center">
+                                            <h4>{{ bookmark.bookmarked_user.name }}</h4>
+                                        </p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group text-center">
+                                                <a href="https://open.spotify.com/user/nicojocel?si=fd37a97bcc834b3c" target="_blank" class="btn btn-primary my-2">Spotify Profile</a>
+                                                <a href="/users/{{ bookmark.bookmarked_user_id }}" class="btn btn-primary my-2">Connectify Profile</a>
+                                                <a href="/bookmark/{{ bookmark.bookmarked_user_id }}/unbookmark" class="btn btn-primary my-2">unbookmark</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          {% endfor %}
+                </div>
+            </div>
+        </div>
     </div>
     <div class="container">
-      <h2>Top Artists of Bookmarked Profiles</h2>  
-        <div class="container">
-        </div> 
-      <ul>
-          {% for artist in all_artists %}
-            <li> {{ artist.artist_id }} -- {{ artist.artist_name }} -- {{ artist.user_id }}</li>
-          {% endfor %}
-      </ul>
+     
+        <a href="/connect" class="btn btn-primary my-2">Back to Connect Map</a>
+
     </div>
+    
   </div>
-  <a href="/connect" class="btn btn-primary my-2">Back to Connect Map</a>
 
  {% endblock %}
 

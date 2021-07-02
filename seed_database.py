@@ -20,9 +20,8 @@ def get_dummies():
     # Create dummy users, store them in list so we can use them
     dummies_in_db = []
     for user in dummy_users:
-        email, password, name, s_id, latitude, longitude, recent_activity = (
+        email, name, s_id, latitude, longitude, recent_activity = (
             user["email"],
-            user["password"],
             user["name"],
             user["s_id"],
             user["latitude"],
@@ -31,7 +30,7 @@ def get_dummies():
         )
         last_played = datetime.strptime(user["played_at"], "%Y-%m-%dT%H:%M:%S.%f%z")
 
-        db_user = crud.create_user(email, password, name, s_id, latitude, longitude, recent_activity)
+        db_user = crud.create_user(email, name, s_id, latitude, longitude, recent_activity)
         dummies_in_db.append(db_user)
 
     model.db.session.commit()

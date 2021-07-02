@@ -35,8 +35,6 @@ class User(db.Model):
     email = db.Column(db.String, 
                         nullable=False, 
                         unique=True)
-    password = db.Column(db.String, 
-                        nullable=False)
     s_id = db.Column(db.String,
                         nullable=False)
     latitude = db.Column(db.Float)
@@ -74,32 +72,6 @@ class User(db.Model):
             Bookmark.user_id == self.user_id,
             Bookmark.bookmarked_user_id == user.user_id).count() > 0
       
-    def get_token_info(self):
-        """Return sp_token_info dictionary (for Spotipy token cache)."""
-
-        return {
-            "access_token": self.sp_token_info.access_token,
-            "expires_in": self.sp_token_info.expires_in
-        }
-
-
-class SpotifyTokenInfo(db.Model):
-    
-    __tablename__ = "tokeninfo"
-    
-    sp_token_id = db.Colmn(db.Integer,
-                           autoincrement=True,
-                           primary_key=True)
-    user_id = db.Column(db.ForeignKey('users.user_id'), nullable=False)
-    access_token = db.Column(db.String)
-    expires_in = db.Column(db.Integer)
-
-    user = db.relationship(
-        'User',
-        backref='sp_token_info',
-        uselist=False
-    )
-    
 
 class Track(db.Model):
     """Top 50 tracks (long term)"""
@@ -120,9 +92,11 @@ class Track(db.Model):
     user_id = db.Column(db.ForeignKey('users.user_id'),
                             nullable=False)
 
-    
     def __repr__(self):
         return f'< track_id = {self.track_id} track_name = {self.track_name} >'
+    
+    def create_spotify_uri(self):
+        return f"spotify:track:{self.sp_track_id}"
     
 class Artist(db.Model):
     """An Artist."""
@@ -185,6 +159,7 @@ class Bookmark(db.Model):
                                 nullable=False)
     bookmarked_user_id = db.Column(db.ForeignKey('users.user_id'),
                                 nullable=False)
+    
     
     def __repr__(self):
         return f'< bookmark_id = {self.bookmark_id} || {self.user_id} has bookmarked {self.bookmarked_user_id} >'

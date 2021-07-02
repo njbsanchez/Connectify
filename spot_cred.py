@@ -13,15 +13,16 @@ if len(sys.argv) > 1:
 playlists = sp.user_playlists(user)
 
 while playlists:
-    for i, playlist in enumerate(playlists['items']):
-        print(
-            "%4d %s %s" %
-            (i +
-             1 +
-             playlists['offset'],
-             playlist['uri'],
-             playlist['name']))
-    if playlists['next']:
-        playlists = sp.next(playlists)
+    for playlist in playlists['items']:
+        
+    spot_id, playlist_description, uri, name = (
+        playlist['id'],
+        playlist['description'],
+        playlist['uri'],
+        playlist['name']
+    ) 
+             
+    if playlist['next']:
+        playlists = sp.next(playlist)
     else:
         playlists = None

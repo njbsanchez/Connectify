@@ -1,5 +1,28 @@
 "use strict";
 
+
+navigator.geolocation.getCurrentPosition(
+  // Handle success
+  (pos) => {
+    $.post(
+      '/api/user/location',
+      {latitude: pos.coords.latitude, longitude: pos.coords.longitude},
+      (res) => {
+        console.log(res);
+      });
+  },
+  // Handle error
+  (err) => {
+    
+  },
+  // Options that get passed to browser
+  {
+    enableHighAccuracy: true,
+    timeout: 5000,
+    maximumAge: 0
+  }
+);
+
 $('#submit').on('submit', (evt) => {
   evt.preventDefault();
 
@@ -24,7 +47,7 @@ function initMap() {
     panControl: false,
     streetViewControl: false,
     zoom: 12,
-    mapTypeId: google.maps.MapTypeId.NONE
+    mapId:'7470855a38d590e8'
   });
   
   const userInfo = new google.maps.InfoWindow();
@@ -36,7 +59,7 @@ function initMap() {
         <div class="window-content">
           <div class="user-thumbnail">
             <img
-              src="/static/img/user_icon.jpg"
+              src="/static/img/logo_user.jpg"
               alt="groovy_user"
             />
           </div>
@@ -55,10 +78,9 @@ function initMap() {
           lng: user.longitude,
         },
         title: `Listener Name: ${user.name}`,
-
         icon: {
-          url: '/static/img/user_icon.png',
-          scaledSize: new google.maps.Size(50, 50)
+          url: '/static/img/logo_user.png',
+          scaledSize: new google.maps.Size(150, 150)
         },
         map: map, 
       });
@@ -67,7 +89,9 @@ function initMap() {
         userInfo.close();
         userInfo.setContent(userInfoContent);
         userInfo.open(map, userMarker);
+        opendiv();
       });
+
     }
   }).fail(() => {
       alert((`failed.

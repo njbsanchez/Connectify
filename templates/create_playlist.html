@@ -1,0 +1,41 @@
+
+{% extends 'base.html' %}
+
+<body>
+  <main>
+        
+    {% block body %}
+      
+      <div class="container col-xl-10 col-xxl-8 px-4 py-5">
+
+            <h1 class="display-4 fw-bold lh-1 mb-3 text-center">Create My Playlist</h1>
+            <h3 class="text-center">Please provide info.</h3>
+
+        <div class="row align-items-center g-lg-5 py-5">
+
+            <form action="/create-playlist/<similarity_cat>" method="POST" class="p-4 p-md-5 border rounded-3 bg-light">
+            
+              <div class="form-floating mb-3">
+                <input type="string" class="form-control" id="floatingInput" name="playlist_name" placeholder="A really cool playlist name.">
+                <label for="floatingInput">Playlist Name</label>
+              </div>
+
+              <h2>Tracks to be Added to Playlist</h2>  
+              <div class="container">
+                  <h3> adding the following tracks </h3>
+                  {% for track in tracks %} 
+                      <h4> {{ track.track_name }} -- {{ track.artist_name }}</h4>
+                  {% endfor %}
+              </div>
+
+              <button class="w-100 btn btn-lg btn-primary" type="submit">Create my Playlist!</button>   
+            </form>
+  
+        </div>
+      </div>
+      <div class="b-divider"></div>
+
+
+      {% endblock %}
+  </main>
+</body>

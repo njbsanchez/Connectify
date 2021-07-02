@@ -1,0 +1,27 @@
+body {
+    background-color: black;
+}
+
+#profName {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+#avg_ratio {
+/* <length> values */
+font-size: 12px;
+font-size: 0.8em;
+}
+
+.center {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+
+.demo-1 {
+    
+    background-image: url('/static/user_profile/landing.png');
+    background-color:
+}

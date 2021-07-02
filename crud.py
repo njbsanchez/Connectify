@@ -2,11 +2,14 @@
 from model import db, User, connect_to_db, Playlist, Track, Artist, Bookmark
 from flask import session
 import random
+import argparse
+import logging
 
-def create_user(email, password, name, s_id, latitude=None, longitude=None, recent_activity=None):
+
+def create_user(email, name, s_id, latitude=None, longitude=None, recent_activity=None):
     """Create and return a new user."""
 
-    user = User(email=email, password=password, name=name, s_id=s_id, latitude=latitude, longitude=longitude, recent_activity=recent_activity)
+    user = User(email=email, name=name, s_id=s_id, latitude=latitude, longitude=longitude, recent_activity=recent_activity)
 
     db.session.add(user)
     db.session.commit()
@@ -34,6 +37,12 @@ def update_user_location(user, latitude, longitude):
 
     return user
 
+def get_sid_by_id(id):
+    """Return a user by id."""
+
+    user = User.query.filter(User.user_id == id).first()
+
+    return user.s_id
 
 def get_user_by_id(id):
     """Return a user by id."""
@@ -120,8 +129,6 @@ def get_user_playlists(user_id):
     
     return recent_playlists
 
-
-
 def compare_artists(current_user, user_to_compare):
     """."""
     
@@ -152,14 +159,23 @@ def compare_artists(current_user, user_to_compare):
     if count_similar == 0:
         similarity_ratio = 0
     else:
-        similarity_ratio = count / len(my_set)
+        similarity_ratio = (count / len(my_set))*100
+    if similarity_ratio >= 70:
+        similarity_cat = "high"
+    elif similarity_ratio >= 40 and similarity_ratio < 70:
+        similarity_cat = "med"
+    elif similarity_ratio >= 10 and similarity_ratio < 40:
+        similarity_cat = "low"
+    else:
+        similarity_cat = "nada"
     
     artist_comparison = {
         "my_artists_to_share": my_artists_to_share,
         "new_artists_to_me": new_artists_3,
         "artist_similar": artist_similar,
         "count_similar": count_similar,
-        "a_similarity_ratio": similarity_ratio
+        "similarity_ratio": similarity_ratio,
+        "similarity_cat": similarity_cat
     }
     
     return artist_comparison
@@ -188,16 +204,28 @@ def compare_tracks(current_user, user_to_compare):
     my_tracks_to_share = my_set - user_set
     new_tracks_to_me = user_set - my_set
     new_tracks_3 = set(random.choices(list(new_tracks_to_me), k=3))
-    track_similar = my_set & user_set     
+    track_similar = set(random.choices(list(my_set & user_set), k=3))  
     count_similar = len(track_similar)
-    similarity_ratio = count / len(my_set)
+    if count_similar == 0:
+            similarity_ratio = 0
+    else:
+        similarity_ratio = (count / len(my_set)*100)
+    if similarity_ratio >= 70:
+        similarity_cat = "high"
+    elif similarity_ratio >= 40 and similarity_ratio < 70:
+        similarity_cat = "med"
+    elif similarity_ratio >= 10 and similarity_ratio < 40:
+        similarity_cat = "low"
+    else:
+        similarity_cat = "nada"
     
     track_comparison = {
         "my_tracks_to_share": my_tracks_to_share,
         "new_tracks_to_me": new_tracks_3,
         "track_similar": track_similar,
         "count_similar": count_similar,
-        "t_similarity_ratio": similarity_ratio
+        "similarity_ratio": similarity_ratio,
+        "similarity_cat": similarity_cat
     }
     
     return track_comparison
@@ -245,3 +273,23 @@ def get_bookmark(bookmarked_user_id):
 def get_all_bookmarks():
     
     return Bookmark.query.filter(Bookmark.user_id == session['user_id']).all()
+
+def create_playlist(sp_playlist_id, s_id, playlist_name, user_id, play_url, play_desc="A Playlist."):
+
+    playlist = Playlist(
+        s_id=s_id,
+        sp_playlist_id=sp_playlist_id,
+        playlist_name=playlist_name, 
+        user_id=user_id, 
+        play_desc=play_desc, 
+        play_url=play_url
+    )
+    
+    db.session.add(playlist)
+    db.session.commit()
+    
+    playlist = Playlist.query.filter(Playlist.sp_playlist_id == sp_playlist_id).first()
+    
+    return playlist
+    
+    

@@ -10,6 +10,14 @@
 -------------------------------------------------- */
 /* Padding below the footer and lighter body text */
 
+.mycheckbox{
+  margin-top:5px;
+  margin-left:5px;
+}
+.mycheckboxdiv{
+   text-align:right;
+}
+
 body {
     padding-top: 3rem;
     padding-bottom: 3rem;
@@ -100,3 +108,13 @@ body {
     }
   }
   
+  .button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+  }

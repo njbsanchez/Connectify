@@ -1,16 +1,37 @@
-#left {       /* line 40 on connect.html needs an independent scroll feature */
-  height:100%;
-  position: absolute;
-  overflow-y: scroll; 
-}
-
-/* #left-container {
-  position: absolute;
-} */
-/* #right-container {
+/* html, body {
+  width: 100%;
   height: 100%;
-  position: fixed;
-  width: inherit; 
+  overflow: hidden;
 }
 
- */
+.overflow-y {
+  overflow-y: scroll !important;
+} */
+
+/* .left_div {
+  position: relative;
+  text-align: justify;
+  border: 1px solid rgba(204, 204, 204, 0.32);
+  width: auto;
+  height: 100%;
+  padding: 10px;
+  overflow: hidden;
+}
+
+.right_div {
+  position: fixed;
+  right: 0px;
+  float: right;
+  border: 1px solid rgba(204, 204, 204, 0.32);
+  width: 200px;
+  height: 100%;
+  text-align: justify;
+  padding: 10px;
+  overflow: hidden;
+}
+
+#rightContainer {
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: 0;
+} */
