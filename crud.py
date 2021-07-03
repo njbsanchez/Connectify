@@ -291,5 +291,4 @@ def create_playlist(sp_playlist_id, s_id, playlist_name, user_id, play_url, play
     playlist = Playlist.query.filter(Playlist.sp_playlist_id == sp_playlist_id).first()
     
     return playlist
-    
-    
+

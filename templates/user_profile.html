@@ -24,15 +24,14 @@
 
 {% block body %}
 <body>
-  
   <div class="row h-100">
      <!-- Profile widget -->
-    <div class="col-4 overflow-hidden">
+    <div class="col-4">
         <!-- user info right column panel-->
         <div class="bg-dark">
-            <div class="demo-1 container-fluid d-flex justify-content-center align-items-center">
-                <div class="col-4">
-                    <img src="{{ spotify_user["images"][0]["url"] }}" alt="{{ user.name }}'s profile image" class="shadow rounded-circle" alt="Cinque Terre" width="100%" height="100%"/>
+            <div class="container-fluid d-flex text-white h-100 pe-0 justify-content-center align-items-center" id="profile_back">
+                <div class="col-4" >
+                    <img src="{{ spotify_user["images"][0]["url"] }}" alt="{{ user.name }}'s profile image" class="shadow rounded-circle" alt="Cinque Terre" id="prof_photo" width="100%" height="100%"/>
                 </div>
                 <div class="col-8">
                     <div class="row">
@@ -43,22 +42,21 @@
                     <p></p>
                     </div>
                     <div class="row">
-                        <h2>{{ spotify_user["display_name"] }}</h2>
+                        <h1>{{ spotify_user["display_name"] }}</h1>
                         <p>   {{ num_playlists }} Playlists - {{ spotify_user["followers"]["total"] }} Followers</p>
                     </div>
                 </div>
             </div>
-            <div class="container align-items-center">
-                <a href="{{ spotify_user["external_urls"]["spotify"] }}" target="_blank" class="btn btn-primary my-2">Spotify Profile</a>
-                {%if user.has_existing_bookmarked_user(user)%}
-                    <a href="/bookmark/{{ user.user_id }}/unbookmark" class="btn btn-primary my-2">Unbookmark User</a>
-                    {% else %}
-                        <a href="/bookmark/{{ user.user_id }}/bookmark" class="btn btn-primary my-2">Bookmark User</a>
-                    {% endif %}
-            </div>
-            <div class="container w-10 text-center">
-                <div class="d-flex align-items-center text-center">
-                    <h5 class="mb-0 text-center">Playlists I've Been Binging...</h5>
+                    <h1>  </h1>
+                    <a href="{{ spotify_user["external_urls"]["spotify"] }}" target="_blank" class="button btn-primary btn-block my-2">Spotify Profile</a>
+                    {%if user.has_existing_bookmarked_user(user)%}
+                        <a href="/bookmark/{{ user.user_id }}/unbookmark" class="buttton btn-primary btn-block my-2">Unbookmark User</a>
+                        {% else %}
+                            <a href="/bookmark/{{ user.user_id }}/bookmark" class="button btn-primary btn-block my-2">Bookmark User</a>
+                        {% endif %}
+            <div class="container px-5 py-3 w-10 center">
+                <div class="d-flex text-center py-2">
+                    <h4 class="mb-0 text-white center">Playlists I've Been Binging...</h4>
                 </div>
                 <div class"container">
                     <div id="carouselArtistIndicators" class="carousel slide" data-ride="carousel">
@@ -69,14 +67,14 @@
                     </ol>
                     <div class="carousel-inner">
                         <div class="carousel-item active">
-                            <img class="d-block" width="80%" height="80%" src="https://i.ibb.co/L591TYT/play-thumb.png" alt="first slide">
+                            <img class="d-block" width="100%" height="100%" src="https://i.ibb.co/L591TYT/play-thumb.png" alt="first slide">
                             <div class="carousel-caption d-none d-block">
                                 <p> Click Through >>> </p>
                             </div>
                         </div>
                         {%for playlist in playlists%}
                           <div class="carousel-item">
-                              <img class="d-block" width="80%" height="80%" src="{{ playlist['images'][0]['url']}}" alt="{{ playlist['name'] }} slide">
+                              <img class="d-block center" width="100%" height="100%" src="{{ playlist['images'][0]['url']}}" alt="{{ playlist['name'] }} slide">
                               <div class="carousel-caption d-none d-block">
                                   <a class="btn btn-success" href=" {{ playlist['external_urls'].get('spotify') }}" target="_blank">{{ playlist['name'] }}</a>
                               </div>
@@ -96,73 +94,84 @@
           </div>
           </div>
         </div>
-    <div class="col-8">
-        <div class="row">
-            <div class="bg-white">
-                <div class="row">
-                    <div class="col-4">
-                        <div class="row text-center"><p id="avg_ratio">{{avg_ratio}}</p></row>
-                        <h4>Percent Similarity based on Average Top Artists and Top Tracks</h4>
-                        <div class="row col-12">
-                            <table class="center">
-                            <tr>
-                                <td>{{artist_comparison["similarity_ratio"]}}</td>
-                                <td>Percent Similarity based on Top Artists</td>
-                            </tr>
-                            <tr>
-                                <td>{{track_comparison["similarity_ratio"]}}</td>
-                                <td>Percent Similarity based on Top Tracks</td>
-                            </tr>
-                            </table>
-                        </div>
-                        </div>
-                    </div>
-                    <div class="col-8">
-                        <p> Compatibility </p>
-                        <ul>
-                        <h3>Similar Artists</h3>
-                            {% for artist in artist_comparison.artist_similar %}
-                                <li> {{ artist[0] }}</li>
-                            {% endfor %}
-                        <h3>{{user.name}}'s Favorite Artists You Should Check Out!</h3>
-                            {% for artist in artist_comparison.new_artists_to_me %}
-                                <li> {{ artist[0] }}</li>
-                            {% endfor %}
-                        <h3></h3>
-                        <h3>- - - - - - -- </h3>
-                        <h3></h3>
-                        <h3>Similar Tracks</h3>
-                            {% for track in track_comparison.track_similar %}
-                                <li> {{ track[0] }}</li>
-                            {% endfor %}
-                        <h3>{{user.name}}'s Favorite Tracks You Should Check Out!</h3>
-                            {% for track in track_comparison.new_tracks_to_me %}
-                                <li> {{ track[0] }}</li>
-                            {% endfor %}
-                        <h3></h3>
-                        </ul>
-                </div>
-                </div>
-            </div> 
-        </div>
+    <div class="col-8 h-100 y-scroll">
+        <div title="similarity_ratio" class="row text-white" id="ratio_an">
+            <div class="col-4 mt-4 mx-3 text-center" id="ratio_an">
+                <h5>{{current_user.name}}'s and {{ user.name }}'s Similarity Analysis</h5>
+                <p id="avg_ratio">{{artist_comparison["similarity_cat"]}}</p>
+            </div>
+            <div class="col-7 mt-4 mx-3">
+                <table class="table text-white">
+                <tr>
+                    <td id="ratio">{{avg_ratio}}%   </td>
+                    <td id="ratio_desc">Similarity based on Average of Top Artist and Tracks</td>
+                </tr>
+                <tr>
+                    <td id="ratio">{{artist_comparison["similarity_ratio"]}}%   </td>
+                    <td id="ratio_desc">Similarity based on Top Artists </td>
+                </tr>
+                <tr>
+                    <td id="ratio">{{track_comparison["similarity_ratio"]}}%   </td>
+                    <td id="ratio_desc">Similarity based on Top Tracks</td>
+                </tr>
+                </table>
+            </div>
+        </div> 
+        <div title="tracks" class="row text-white">
         <div class="row col-12">
-            <div class="bg-white shadow rounded overflow-hidden text-center">
-                <h2>Top Artists</h2>  
-                <div class="container">
+            <div class="bg-dark shadow rounded overflow-hidden" id="ratio_an">
+                <h3 class="text-center" id="ratio_an">A few of {{user.name}}'s Favorites</h3> 
+                <table id="recommendations" class="table borderless text-white">
+                <tr>
+                    <td><h2>Shared Favorites</h2></td>
+                    <td>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                    {% for track in similar_tracks %}
+                        <div class="card shadow-sm bg-dark">
+                            <img src="{{ track["album"]["images"][0]["url"] }}" class="shadow center" id="prof_photo" width="40%" />
+                            <div class="card-body text-center">
+                            <a target="_blank" href="{{ track["external_urls"]["spotify"] }}" class="card-text">{{ track["name"] }}</a>
+                            <p>{{ track["artists"][0]["name"] }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><h2>New Discoveries For You</h2></td>
+                    <td>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                    {% for track in new_tracks %}
+                        <div class="card shadow-sm bg-dark">
+                            <img src="{{ track["album"]["images"][0]["url"] }}" class="shadow center" id="prof_photo" width="40%" />
+                            <div class="card-body text-center">
+                            <a target="_blank" href="{{ track["external_urls"]["spotify"] }}" class="card-text">{{ track["name"] }}</a>
+                            <p>{{ track["artists"][0]["name"] }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </td>
+                </tr>
+                </table> 
+            </div>  
+        <div class="row col-12">
+            <div class="text-center" id="ratio_an">
+                <h3 id="ratio_an">A few of {{user.name}}'s favorite Artists... </h3>  
+                <div class="container center">
                     <div class="row">
-                        {% for artist in top_artists[:9] %}
+                        {% for artist in artists_sp_info %}
                         <div class="col">
                         <div class="card shadow-sm">
-                            <svg class="bd-placeholder-img card-img-top" width="100%" height="50" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+                            <img src="{{ artist["images"][0]["url"] }}" class="shadow center rounded-circle" id="prof_photo" width="80%" height="80%"/>
 
                             <div class="card-body">
-                            <p class="card-text">{{ artist.artist_name }}</p>
-                            <div class="d-flex justify-content-between align-items-center">
+                            <p class="card-text">{{ artist.name }}</p>
+                            <div class="d-flex justify-content-between text-center">
                                 <div class="btn-group">
                                 <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
                                 <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
                                 </div>
-                                <small class="text-muted">9 mins</small>
                             </div>
                             </div>
                         </div>
@@ -171,25 +180,23 @@
                     </div>
                 </div> 
             </div>  
-        <div class="row col-12>
-            <div class="bg-white shadow rounded overflow-hidden text-center">
-                <h2>Top 10 Tracks</h2>  
-                
+        <div class="row col-12">
+           <div class="overflow-hidden text-center" id="ratio_an">
+                <h3 id="ratio_an">A few of {{user.name}}'s favorite Tracks... </h3>  
                 <ul>
-                    {% for track in top_tracks[:5] %}
+                    {% for track in top_tracks[:4] %}
                         
-                        <iframe src="https://open.spotify.com/embed/track/{{ track.sp_track_id }}" width=100 height=100 frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                        <iframe src="https://open.spotify.com/embed/track/{{ track.sp_track_id }}" width=400 height=400 frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
                     {% endfor %}
                 </ul>
             </div>
         </div>
-        <div class="row col-12">  
-            <div class="bg-white shadow rounded overflow-hidden">
-          <h2>Calculate Comparisons</h2>  
+    </div>
+    </div>
+    </div>
+</div>
+    <a href="/connect" class="button btn-primary btn-block my-2">Back to all Users</a>
 
-          
-
-          <p> <a href="/users">Back to all Users</a> </p>
 </body>
 {% endblock %}
 

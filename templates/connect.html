@@ -2,91 +2,84 @@
 
 {%block title %}Connect{% endblock %}
 
-
 {% block head %}
-  <link rel="stylesheet" href="/static/css/maps.css">
-  <link rel="stylesheet" href="/static/css/users.css">
-  <link rel="stylesheet" href="/static/css/connect.css">
+  <style>
+    html {
+      height: 100%;
+      width: 100%;
+    }
+
+    body {
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .y-scroll {
+      overflow-y: scroll;
+    }
+
+    #map-column, #map {
+      min-height: 100vh;
+      height: 100%;
+    }
+  </style>
 
   <script src="/static/js/mapStyles.js"></script>
   <script src="/static/js/google_map.js"></script>
-  <script
-    async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBZz8jsm-G3NivDaxa8PwlDRfZhIyJ4Q8&callback=initMap">
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFSJXYD8gYwgSkNOQl4zZb3GeCufnQlBs&callback=initMap">
   </script>
 {% endblock %}
 
 {% block body %}
-    <main>
+<div class="container-fluid h-100 pe-0">
+  <div class="row h-100">
+    <aside class="col-4 y-scroll h-100">
+      <header>
+        <h1>Connect Locally</h1>
+        <p class="lead">
+          Connect with other music heads near by. Something short and leading about the collection below—its
+          contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over
+          it entirely.
+        </p>
+      </header>
 
-    <section class="h-100 mx-3 full-columns">
-        <div class="row h-100">
-            <div class="col-lg-4 h-100 overflow-auto justify-content-center" id="leftContainer">
-                <div class"left_div">
-                <div class="container py-4 content">
-                    <div class="row py-lg-5">
-                        <div class="col-lg-10 col-md-12 mx-auto text-center">
-                            <h1 class="fw-light">Connect Locally
-                            </h1>
-                            <p class="lead text-muted">
-                                Connect with other music heads near by. Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="album py-5 bg-light">
-                        <div class="container">
-                          {%for user in users%}
-                            <div class="row row-cols-1 g-3" id="{{ user.s_id }}">
-                                <div class="col">
-                                    <div class="card shadow-sm">
-                                        <img class="card-img-top text-center" width="100%" height="100%
-                                            " src="https://i.guim.co.uk/img/media/dd3882c4ad0fd11a14cffc7e5edaabe5ce8a8b53/0_85_1077_646/master/1077.jpg?width=700&quality=85&auto=format&fit=max&s=c906598d7b435814a7e49a5ee4779c2f" alt="{{ user.name }}'s profile image" preserveAspectRatio="xMidYMid slice" focusable="true">
-                                        <div class="card-body text-center">
-                                            <p class"card-text text-center">
-                                                <h4>{{ user.name }}</h4>
-                                                <h5>{{ user.s_id }}</h5>
-                                            </p>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="btn-group text-center">
-                                                    <div class="container align-items-center">
-                                                        <a href="https://open.spotify.com/user/nicojocel?si=fd37a97bcc834b3c" target="_blank" class="btn btn-primary my-2">Spotify Profile</a>
-                                                        <a href="/users/{{ user.user_id }}" class="btn btn-primary my-2">Connectify Profile</a>
-                                                        {%if current_user.has_existing_bookmarked_user(user)%}
-                                                            <a href="/bookmark/{{ user.user_id }}/unbookmark" class="btn btn-primary my-2">Unbookmark User</a>
-                                                            {% else %}
-                                                                <a href="/bookmark/{{ user.user_id }}/bookmark" class="btn btn-primary my-2">Bookmark User</a>
-                                                            {% endif %}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                          {%endfor%}   
-                        </div>
-                    </div>
+      <section id="nearby">
+        {% for user in users %}
+          <div class="card shadow-sm">
+            <img class="card-img-top text-center" width="100%" height="100%"
+              src="https://i.guim.co.uk/img/media/dd3882c4ad0fd11a14cffc7e5edaabe5ce8a8b53/0_85_1077_646/master/1077.jpg?width=700&quality=85&auto=format&fit=max&s=c906598d7b435814a7e49a5ee4779c2f"
+              alt="{{ user.name }}'s profile image" preserveAspectRatio="xMidYMid slice" focusable="true">
+            <div class="card-body text-center">
+              <h4>{{ user.name }}</h4>
+              <h5>{{ user.s_id }}</h5>
+
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group text-center text-small">
+                    <a href="https://open.spotify.com/user/nicojocel?si=fd37a97bcc834b3c" target="_blank"
+                      class="btn btn-primary my-2">Spotify Profile</a>
+                    <a href="/users/{{ user.user_id }}" class="btn btn-primary my-2">Connectify Profile</a>
+                    {%if current_user.has_existing_bookmarked_user(user)%}
+                    <a href="/bookmark/{{ user.user_id }}/unbookmark" class="btn btn-primary my-2">Unbookmark
+                      User</a>
+                    {% else %}
+                    <a href="/bookmark/{{ user.user_id }}/bookmark" class="btn btn-primary my-2">Bookmark
+                      User</a>
+                    {% endif %}
                 </div>
-                </div>
-            </div>            
-            <div class="col-lg-8 h-100 bg-light d-flex overflow-hidden"  id="rightContainer">
-                <div class="right-div">
-                <div class="container" id="mapContainer">
-                    <section class="map">
-                    <div id="map">
-                    </div>
-                    </section>
-                </div>
-                </div>
+              </div>
             </div>
+          </div>
+        {% endfor %}
+      </section>
+    </aside>
 
-        </div>
-    </section>
+    <main id="map-column" class="col h-100 ">
+      <div id="map" class="h-100"></div>
     </main>
+  </div>
+</div>
 
-
-  <script src="/static/js/connect.js"></script>
+<script src="/static/js/connect.js"></script>
 {% endblock %}
-
-
-
