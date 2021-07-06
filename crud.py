@@ -230,6 +230,104 @@ def compare_tracks(current_user, user_to_compare):
     
     return track_comparison
 
+def compare_artists_bookmarks(current_user, user_to_compare):
+    """."""
+    
+    current_user = current_user
+    user_to_compare = user_to_compare
+    
+    
+    my_artists = Artist.query.filter(Artist.user_id == current_user).all()
+    my_set = set()
+    
+    for artist in my_artists:
+        artist_tup = (artist.artist_name, artist.sp_artist_id)
+        my_set.add(artist_tup)
+        
+    user_artists = Artist.query.filter(Artist.user_id == user_to_compare).all()
+    user_set = set()
+    
+    for artist in user_artists:
+        artist_tup = (artist.artist_name, artist.sp_artist_id)
+        user_set.add(artist_tup)
+        
+    count = len(my_set & user_set)
+    my_artists_to_share = my_set - user_set
+    new_artists_to_me = user_set - my_set
+    artist_similar = my_set & user_set  
+    count_similar = len(artist_similar)
+    if count_similar == 0:
+        similarity_ratio = 0
+    else:
+        similarity_ratio = (count / len(my_set))*100
+    if similarity_ratio >= 70:
+        similarity_cat = "high"
+    elif similarity_ratio >= 40 and similarity_ratio < 70:
+        similarity_cat = "med"
+    elif similarity_ratio >= 10 and similarity_ratio < 40:
+        similarity_cat = "low"
+    else:
+        similarity_cat = "nada"
+    
+    artist_comparison = {
+        "my_artists_to_share": my_artists_to_share,
+        "artist_similar": artist_similar,
+        "count_similar": count_similar,
+        "similarity_ratio": similarity_ratio,
+        "similarity_cat": similarity_cat
+    }
+    
+    return artist_comparison
+
+
+def compare_tracks_bookmarks(current_user, user_to_compare):
+    """Return a list of artists based on user_id."""
+    
+    current_user = current_user
+    user_to_compare = user_to_compare
+    
+    my_tracks = Track.query.filter(Track.user_id == current_user).all()
+    my_set = set()
+    
+    for track in my_tracks:
+        track_tup = (track.track_name, track.sp_track_id)
+        my_set.add(track_tup)
+    
+    user_tracks = Track.query.filter(Track.user_id == user_to_compare).all()
+    user_set = set()
+    
+    for track in user_tracks:
+        track_tup = (track.track_name, track.sp_track_id)
+        user_set.add(track_tup)
+    
+    count = len(my_set & user_set)
+    my_tracks_to_share = my_set - user_set
+    new_tracks_to_me = user_set - my_set
+    track_similar = my_set & user_set
+    count_similar = len(track_similar)
+    if count_similar == 0:
+            similarity_ratio = 0
+    else:
+        similarity_ratio = (count / len(my_set)*100)
+    if similarity_ratio >= 70:
+        similarity_cat = "high"
+    elif similarity_ratio >= 40 and similarity_ratio < 70:
+        similarity_cat = "med"
+    elif similarity_ratio >= 10 and similarity_ratio < 40:
+        similarity_cat = "low"
+    else:
+        similarity_cat = "nada"
+    
+    track_comparison = {
+        "my_tracks_to_share": my_tracks_to_share,
+        "track_similar": track_similar,
+        "count_similar": count_similar,
+        "similarity_ratio": similarity_ratio,
+        "similarity_cat": similarity_cat
+    }
+    
+    return track_comparison
+
 def clear_playlists():
     to_delete = get_user_playlists(session["user_id"])
     for playlist in to_delete:

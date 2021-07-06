@@ -1,7 +1,31 @@
 
 {% extends 'base.html' %}
 
-<body>
+
+{% block head %}
+<head>
+  <style>
+    body {
+      background-color: black;
+    }
+    #form-float {
+      text-color: #808080;
+    }
+    .button {
+      background-color: #4CAF50; 
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+    }
+  </style>
+</head>
+{% endblock %}
+
+<body class="bg-dark">
   <main>
         
     {% block body %}
@@ -11,26 +35,26 @@
             <h1 class="display-4 fw-bold lh-1 mb-3 text-center">Create My Playlist</h1>
             <h3 class="text-center">Please provide info.</h3>
 
-        <div class="row align-items-center g-lg-5 py-5">
-
-            <form action="/create-playlist/<similarity_cat>" method="POST" class="p-4 p-md-5 border rounded-3 bg-light">
-            
-              <div class="form-floating mb-3">
+        <div class="row align-items-center g-lg-5 py-10">
+            {% if not tracks: %}
+                    <p class="text-warning">Sorry! You don't have any bookmarks in this category. Please go back to your bookmarks and try again.</p>
+                    <a class="button w-100 btn-lg btn-primary px-3" href="/bookmarks">Back to Bookmarks</a>   
+            {% else %}
+            <form action="/create-playlist/<similarity_cat>" method="POST" class="p-4 p-md-5 border bg-dark form rounded-3">
+              <div id="form-float" class="text-dark form-floating mb-3">
                 <input type="string" class="form-control" id="floatingInput" name="playlist_name" placeholder="A really cool playlist name.">
-                <label for="floatingInput">Playlist Name</label>
+                <label for="floatingInput">Input a playlist name here!</label>
               </div>
-
-              <h2>Tracks to be Added to Playlist</h2>  
-              <div class="container">
-                  <h3> adding the following tracks </h3>
-                  {% for track in tracks %} 
-                      <h4> {{ track.track_name }} -- {{ track.artist_name }}</h4>
-                  {% endfor %}
-              </div>
-
-              <button class="w-100 btn btn-lg btn-primary" type="submit">Create my Playlist!</button>   
+                <h2>Tracks to be Added to Playlist:</h2>  
+                <div class="container">
+                    <h4> (Sourced from your {{ similarity_cat }} similarity bookmarks...)</h4>                  
+                        {% for track in tracks %} 
+                            <li> {{ track.track_name }} -- {{ track.artist_name }}</li>
+                        {% endfor %}
+                    <button class="button w-100 btn-lg btn-primary px-3" type="submit">Create my Playlist!</button>   
+                </div>
             </form>
-  
+            {% endif %}  
         </div>
       </div>
       <div class="b-divider"></div>

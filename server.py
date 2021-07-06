@@ -11,6 +11,7 @@ from flask import (
     Flask,
     render_template,
     session,
+    Markup,
     request,
     redirect,
     jsonify,
@@ -112,8 +113,50 @@ def handle_redirect_after_spotify_auth():
 
     return redirect("/connect")
 
-
 @app.route("/profile")
+def show_prof():
+    """Show details on a particular user."""
+
+    if "user_id" not in session.keys():
+        flash("Please sign in to access your profile.")
+        return redirect("/")
+    
+    user_id = session["user_id"]
+    sp.update_my_playlists(user_id, spotify)
+    sp.update_my_tracks(user_id, spotify)
+    sp.update_my_artists(user_id, spotify)
+
+    user = crud.get_user_by_id(user_id)
+    top_tracks = crud.get_user_tracks(user_id)
+    top_artists = crud.get_user_artists(user_id)
+    
+    playlist_dict = spotify_cred.user_playlists(user.s_id)
+    playlists = playlist_dict["items"][:3]
+    num_playlists = len(playlist_dict["items"])
+
+    spotify_user = spotify_cred.user(user.s_id)
+    if not spotify_user["images"]:
+        spotify_user['images'] = [{'url':'https://secondhandsongs.com/picture/471895'}]
+    
+    artists = Artist.query.filter(Artist.user_id == user_id).limit(5)
+    
+    artists_sp_info = []
+    for artist in artists:
+        artist_info = spotify_cred.artist(artist.sp_artist_id)
+        artists_sp_info.append(artist_info)
+
+    return render_template(
+        "profile.html",
+        num_playlists=num_playlists,
+        user=user,
+        top_artists=top_artists,
+        artists_sp_info=artists_sp_info,
+        spotify_user=spotify_user,
+        top_tracks=top_tracks,
+        playlists=playlists,
+    )
+
+@app.route("/hello")
 def show_profile():
 
     if "user_id" not in session.keys():
@@ -183,15 +226,22 @@ def connect_users():
     current_user = User.query.filter_by(
         user_id=session["user_id"]
     ).first_or_404()
-    
-    # connect_info = {}
-    
-    # for user in users:
-    #     spotify_cred = spotify_cred.user(user.s_id)
-    #     connectify_info[user.user_id]=
 
+    connect_info = {}
+    
+    for user in users:
+        spotify_info = spotify_cred.user(user.s_id)
+        if not spotify_info["id"] == current_user.s_id:
+            user_info = [spotify_info["display_name"], spotify_info["id"]]
+            if not spotify_info["images"]:
+                user_info.append('https://secondhandsongs.com/picture/471895')
+            else:
+                user_info.append(spotify_info["images"][0]['url'])
+        connect_info[user] = user_info
+    print(connect_info)
+    
     return render_template(
-        "connect.html", users=users, current_user=current_user)
+        "connect.html", users=users, current_user=current_user, connect_info=connect_info)
 
 
 @app.route("/api/usersinfo")
@@ -291,14 +341,13 @@ def show_playlist_creator(similarity_cat):
     bookmarks = crud.get_all_bookmarks()
 
     for bookmark in bookmarks:
-        track_comparison = crud.compare_tracks(
-            bookmark.user_id, bookmark.bookmarked_user_id
-        )
+        track_comparison = crud.compare_tracks(bookmark.user_id, bookmark.bookmarked_user_id)
         bookmarked_users.append(bookmark)
-        for track in crud.get_user_tracks(bookmark.bookmarked_user_id):
-            tracks.append(track)
+        if track_comparison["similarity_cat"] == similarity_cat:
+            for track in crud.get_user_tracks(bookmark.bookmarked_user_id):
+                tracks.append(track)
 
-    return render_template("create_playlist.html", tracks=tracks)
+    return render_template("create_playlist.html", tracks=tracks, similarity_cat=similarity_cat)
 
 
 @app.route("/create-playlist/<similarity_cat>", methods=["POST"])
@@ -316,18 +365,18 @@ def create_playlist(similarity_cat):
         for track in crud.get_user_tracks(bookmark.bookmarked_user_id):
             tracks.append(track)
 
-    playlist_name = request.form.get("playlist_name")
-    tok = session["spotify_token_info"].get("access_token")
-    # print(tok, "********************** THIS IS TOK")
-    spotify_client = SpotifyClient(tok, crud.get_sid_by_id(session["user_id"]))
-    playlist = spotify_client.create_playlist(playlist_name)
-    print(f"Playlist '{playlist_name}' was created successfully.")
-    print(playlist, "#            ##################################")
-    spotify_client.populate_playlist(playlist, tracks)
-    print(f"Tracks were successfully uploaded to playlist '{playlist_name}'.")
-    current_user = crud.get_user_by_id(session["user_id"])
+    if tracks:
+        playlist_name = request.form.get("playlist_name")
+        tok = session["spotify_token_info"].get("access_token")
+        # print(tok, "********************** THIS IS TOK")
+        spotify_client = SpotifyClient(tok, crud.get_sid_by_id(session["user_id"]))
+        playlist = spotify_client.create_playlist(playlist_name)
+        spotify_client.populate_playlist(playlist, tracks)
+        print(f"Tracks were successfully uploaded to playlist '{playlist_name}'.")
+        current_user = crud.get_user_by_id(session["user_id"])
+        flash(Markup(f'Your playlist has been created! You can find your playlist via your Playlist panel on Spotify or navigate to your new playlist here: <a href="{playlist.play_url}" class="alert-link">{playlist.playlist_name}</a>'))
 
-    return redirect("created")
+    return redirect("/bookmarks")
 
 
 @app.route("/bookmarks")
@@ -367,26 +416,72 @@ def see_all_bookmarks():
         bookmarked_user_id = bookmark.bookmarked_user_id
         user_id = bookmark.user_id
 
-        track_comparison = crud.compare_tracks(user_id, bookmarked_user_id)
+        track_comparison = crud.compare_tracks_bookmarks(user_id, bookmarked_user_id)
 
         sim_by_track[track_comparison["similarity_cat"]].append(bookmark)
 
         for track in crud.get_user_tracks(bookmarked_user_id):
             tracks[track_comparison["similarity_cat"]].append(track)
 
-        artist_comparison = crud.compare_artists(user_id, bookmarked_user_id)
+        artist_comparison = crud.compare_artists_bookmarks(user_id, bookmarked_user_id)
 
         sim_by_artist[artist_comparison["similarity_cat"]].append(bookmark)
 
         for artist in crud.get_user_artists(bookmarked_user_id):
             artists[artist_comparison["similarity_cat"]].append(artist)
 
-    """Playlists created"""
+    high_bookmarks = {}
+    med_bookmarks = {}
+    low_bookmarks = {}
+    nada_bookmarks = {}
 
+    for bookmark in sim_by_track["high"]:
+        user = crud.get_user_by_id(bookmark.bookmarked_user_id)
+        spotify_info = spotify_cred.user(user.s_id)
+        user_info = [spotify_info["display_name"], spotify_info["id"]]
+        if not spotify_info["images"]:
+            user_info.append('https://secondhandsongs.com/picture/471895')
+        else:
+            user_info.append(spotify_info["images"][0]['url'])
+        high_bookmarks[user] = user_info
+   
+    for bookmark in sim_by_track["med"]:
+        user = crud.get_user_by_id(bookmark.bookmarked_user_id)
+        spotify_info = spotify_cred.user(user.s_id)
+        user_info = [spotify_info["display_name"], spotify_info["id"]]
+        if not spotify_info["images"]:
+            user_info.append('https://secondhandsongs.com/picture/471895')
+        else:
+            user_info.append(spotify_info["images"][0]['url'])
+        med_bookmarks[user] = user_info
+        
+    for bookmark in sim_by_track["low"]:
+        user = crud.get_user_by_id(bookmark.bookmarked_user_id)
+        spotify_info = spotify_cred.user(user.s_id)
+        user_info = [spotify_info["display_name"], spotify_info["id"]]
+        if not spotify_info["images"]:
+            user_info.append('https://secondhandsongs.com/picture/471895')
+        else:
+            user_info.append(spotify_info["images"][0]['url'])
+        low_bookmarks[user] = user_info    
+        
+    for bookmark in sim_by_track["nada"]:
+        user = crud.get_user_by_id(bookmark.bookmarked_user_id)
+        spotify_info = spotify_cred.user(user.s_id)
+        user_info = [spotify_info["display_name"], spotify_info["id"]]
+        if not spotify_info["images"]:
+            user_info.append('https://secondhandsongs.com/picture/471895')
+        else:
+            user_info.append(spotify_info["images"][0]['url'])
+        nada_bookmarks[user] = user_info    
+    
     return render_template(
         "bookmarks.html",
         bookmarks=bookmarks,
-        sim_by_track=sim_by_track,
+        low_bookmarks=low_bookmarks,
+        high_bookmarks=high_bookmarks,
+        med_bookmarks=med_bookmarks,
+        nada_bookmarks=nada_bookmarks,
         current_user=current_user,
         artists=artists,
         tracks=tracks,
@@ -419,6 +514,8 @@ def show_user(user_id):
     current_user = crud.get_user_by_id(session["user_id"])
     user = crud.get_user_by_id(user_id)
     spotify_user = spotify_cred.user(user.s_id)
+    if not spotify_user["images"]:
+        spotify_user['images'] = [{'url':'https://secondhandsongs.com/picture/471895'}]
     top_tracks = crud.get_user_tracks(user_id)
     top_artists = crud.get_user_artists(user_id)
     

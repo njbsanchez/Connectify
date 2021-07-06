@@ -10,7 +10,20 @@ navigator.geolocation.getCurrentPosition(
       (res) => {
         console.log(res);
       });
+    const meLocation = new google.maps.Marker({
+      position: {
+        lat: latitude,
+        lng: longitude,
+      },
+      title: `My Location`,
+      icon: {
+        url: '/static/img/arrow.png',
+        scaledSize: new google.maps.Size(150, 150)
+      },
+      map: map, 
+    });
   },
+  
   // Handle error
   (err) => {
     

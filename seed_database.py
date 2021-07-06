@@ -93,38 +93,38 @@ def get_dum_artists():
     return dum_artists_in_db
 
 
-def get_dum_playlists():
-    """Load bears from dataset into database."""
+# def get_dum_playlists():
+#     """Load bears from dataset into database."""
 
-    # Load dummy user data from JSON file
-    with open("data/playlists_OU.json") as f:
-        dummyuser_playlists = json.loads(f.read())
+#     # Load dummy user data from JSON file
+#     with open("data/playlists_OU.json") as f:
+#         dummyuser_playlists = json.loads(f.read())
 
-    # Create dummy users, store them in list so we can use them
-    dum_playlists_in_db = []
-    for user in dummyuser_playlists:
-        for user_id, detail_array in user.items():
-            user_id = int(user_id)
-            for playlist in detail_array:
-                sp_playlist_id, s_id, playlist_name, play_url, play_desc = (
-                    playlist["sp_playlist_id"],
-                    playlist["owner_id"],
-                    playlist["playlist_name"],
-                    playlist["play_url"],
-                    playlist["playlist_desc"],
-                )
-                db_playlist = crud.add_playlist(
-                    sp_playlist_id,
-                    s_id,
-                    playlist_name,
-                    play_url,
-                    play_desc,
-                    user_id,
-                )
-                dum_playlists_in_db.append(db_playlist)
-                model.db.session.commit()
+#     # Create dummy users, store them in list so we can use them
+#     dum_playlists_in_db = []
+#     for user in dummyuser_playlists:
+#         for user_id, detail_array in user.items():
+#             user_id = int(user_id)
+#             for playlist in detail_array:
+#                 sp_playlist_id, s_id, playlist_name, play_url, play_desc = (
+#                     playlist["sp_playlist_id"],
+#                     playlist["owner_id"],
+#                     playlist["playlist_name"],
+#                     playlist["play_url"],
+#                     playlist["playlist_desc"],
+#                 )
+#                 db_playlist = crud.add_playlist(
+#                     sp_playlist_id,
+#                     s_id,
+#                     playlist_name,
+#                     play_url,
+#                     play_desc,
+#                     user_id,
+#                 )
+#                 dum_playlists_in_db.append(db_playlist)
+#                 model.db.session.commit()
 
-    return dum_playlists_in_db
+#     return dum_playlists_in_db
 
 
 if __name__ == "__main__":
@@ -154,10 +154,10 @@ if __name__ == "__main__":
         "************************ DUMMY ARTISTS ADDED TO DB ********************"
     )
 
-    get_dum_playlists()
+    # get_dum_playlists()
 
-    print(
-        "************************ DUMMY PLAYLISTS ADDED TO DB ********************"
-    )
+    # print(
+    #     "************************ DUMMY PLAYLISTS ADDED TO DB ********************"
+    # )
 
     model.db.session.commit()
