@@ -10,8 +10,6 @@
     A Music-Based Social Media App
 </h3>
 
-# Connectify
-
 Connectify is a music-based social media app that allows you to see how your music taste compares to other music fanatics in your area! 
 
 Connectify does this in 3 steps: Connects, Compares, and Creates. By connecting Spotify and providing geolocation,  users can flip through other listener profiles within distance, see comparison statistics based on a listener's top tracks/artists , and bookmark listeners for later reference. Bookmarks are then aggregated based on similarity, giving the user the option to create playlists based off local top tracks.
