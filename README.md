@@ -24,29 +24,28 @@ A user can either create an account/log in using their Spotify premium account -
 <img height="250" src="https://i.ibb.co/zJp0NJH/Screen-Shot-2021-07-07-at-11-04-23-AM.png" alt="Connectify Logo">
 </p>
 Using Geolocation API and Google Maps Javascript API, the user is able to see users in their area, mapped and listed via Connect page.
-<p align="center">
+
 ![connect map](https://media.giphy.com/media/paafF5u3T7EmW1spve/giphy.gif)
-</p>
-The user's listening data is pulled from Spotify's API, creating a snapshot of the user's top tracks, artists, and recently played playlists.
-<p align="center">
+
+ The user's listening data is pulled from Spotify's API, creating a snapshot of the user's top tracks, artists, and recently played playlists.
+
 ![my profile](https://media.giphy.com/media/Ga8oMboFCL3SMAwcFD/giphy.gif)
-</p>
+
 The user can peruse through the profiles of local users and see comparison analysis of music taste similarities and differences. Profiles are bookmarkable, allowing the user to categorize bookmarks based on similarity analysis.
-<p align="center">
+
 ![other profile](https://media.giphy.com/media/6AfJ7iM51loKymS8yW/giphy.gif)
 ![bookmark](https://media.giphy.com/media/lMAKBzXpR9dMK2hdyM/giphy.gif)
-</p>
 Users can create playists based on user's they have bookmarked, opening opportunity to discover new music they may be interested in.
-<p align="center">
+
 ![create a playlist](https://media.giphy.com/media/J0YRRz5OglN1xT1aP5/giphy.gif)
 ![see playlist](https://media.giphy.com/media/yyUdjy0ElHVAuwszlE/giphy.gif)
-</p>
+
 ## Demo
 
 For a quick demonstration of Connectify, please click the image below - You should be sent to a youtube video that covers various features of the app.
-<p align="center">
+
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/s4K1UPxAdaM/0.jpg)](https://www.youtube.com/watch?v=s4K1UPxAdaM)
-</p>
+
 
 ## Tech Stack
 
