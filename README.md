@@ -14,9 +14,10 @@ Connectify is a music-based social media app that allows you to see how your mus
 
 Connectify does this in 3 steps: Connects, Compares, and Creates. By connecting Spotify and providing geolocation,  users can flip through other listener profiles within distance, see comparison statistics based on a listener's top tracks/artists , and bookmark listeners for later reference. Bookmarks are then aggregated based on similarity, giving the user the option to create playlists based off local top tracks.
 
-<h1><u>Table of Contents</u></h1>
+## Table of Contents
+
 <ul>
-<li><a href="#tech-stack">Tech Stack</a></li>
+<li><a href="#features">Features</a></li>
 <li><a href="#Features">Features</a></li>
   <ul>
   <li><a href="#homepage">Home</a></li>
@@ -27,8 +28,10 @@ Connectify does this in 3 steps: Connects, Compares, and Creates. By connecting 
 <li><a href="#instructions">Installation</a></li>
 </ul>
 
+<a name="features"></a>
 ## Features
 
+<h3>Log In</h3>
 A user can either create an account/log in using their Spotify premium account - which is authorized via Spotify's oAuth flow.
 
 ![login](https://media.giphy.com/media/iVadCUYD5cgST9KqhA/giphy.gif)
