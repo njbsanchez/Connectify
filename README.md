@@ -1,5 +1,7 @@
 <p align="center">
-  <img width="200" src="http://material-bread.org/logo-shadow.svg" alt="Material Bread logo">
+  <img width="200" src="https://ibb.co/nRnnPrz" alt="Material Bread logo">
+  <h1> Connectify </h1>
+  <h4> Building Community Through Music </h4>
 </p>
 
 # Connectify
