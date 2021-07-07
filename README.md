@@ -14,6 +14,19 @@ Connectify is a music-based social media app that allows you to see how your mus
 
 Connectify does this in 3 steps: Connects, Compares, and Creates. By connecting Spotify and providing geolocation,  users can flip through other listener profiles within distance, see comparison statistics based on a listener's top tracks/artists , and bookmark listeners for later reference. Bookmarks are then aggregated based on similarity, giving the user the option to create playlists based off local top tracks.
 
+<h1><u>Table of Contents</u></h1>
+<ul>
+<li><a href="#tech-stack">Tech Stack</a></li>
+<li><a href="#Features">Features</a></li>
+  <ul>
+  <li><a href="#homepage">Home</a></li>
+  <li><a href="#addBooks">Search for Books</a></li>
+  <li><a href="#tbr">To Be Read</a></li>
+  <li><a href="#bookRecs">Book Recs</a></li>
+  </ul>
+<li><a href="#instructions">Installation</a></li>
+</ul>
+
 ## Features
 
 A user can either create an account/log in using their Spotify premium account - which is authorized via Spotify's oAuth flow.
@@ -74,16 +87,30 @@ export SPOTIPY_CLIENT_ID=<client_id_here>
 export SPOTIPY_CLIENT_SECRET=<client_secret_here>
 export GOOGLE_CLIENT_KEY=<google_key_here>      #due to nature of Google's API, there is no need for a client secret key.
 ```
-Once you have Connectify opened in your preferred code editor, create and activate your virtual environment. Additionally, apply the secret.sh file for environment use.
+Once you have Connectify opened in your preferred code editor, create and activate your virtual environment.
 
 ```bash
 
 virtualenv env
 source env/bin/activate
-source secrets.sh
+
+
+```
+Install dependencies by installing requirements.txt file.
+
+```bash
+
+pip3 install -r requirements.txt
 
 ```
 
+Source your API keys by applying secrets.sh to your virtual environment.
+
+```bash
+
+source secrets.sh
+
+```
 
 ## Usage
 
@@ -109,6 +136,10 @@ Some additional features and design factors I would like to add in the near futu
 ## Contributing
 
 Pull requests are welcome. As I continue to build out features and improve UX/UI design of the app, feel free to comment or reach out with any suggestions, refactoring advice, or feature requests I can try and add to the application.
+
+## About Me
+
+
 
 ## Lets Connect!
 
