@@ -19,7 +19,7 @@ Connectify does this in 3 steps: Connects, Compares, and Creates. By connecting 
 ## Features
 
 ![login](https://media.giphy.com/media/iVadCUYD5cgST9KqhA/giphy.gif)
- <img height="300" src="https://i.ibb.co/zJp0NJH/Screen-Shot-2021-07-07-at-11-04-23-AM.png" alt="Connectify Logo">
+<img height="250" src="https://i.ibb.co/zJp0NJH/Screen-Shot-2021-07-07-at-11-04-23-AM.png" alt="Connectify Logo">
 
 ![connect map](https://media.giphy.com/media/paafF5u3T7EmW1spve/giphy.gif)
 ![my profile](https://media.giphy.com/media/Ga8oMboFCL3SMAwcFD/giphy.gif)
