@@ -68,38 +68,49 @@ To get started, clone Connectify by pasting below into your terminal.
 git clone https://github.com/njbsanchez/Connectify.git
 ```
 
-Once you have Connectify opened in your preferred code editor, create and activate your virtual environment.
+
+Separately, create developer accounts for both Spotify and Google Maps Javascript API. Once obtained, create a secrets.sh file and input the following:
 
 ```bash
-virtualenv env
-source env/bin/activate
+export SPOTIPY_CLIENT_ID=<client_id_here>
+export SPOTIPY_CLIENT_SECRET=<client_secret_here>
+export GOOGLE_CLIENT_KEY=<google_key_here>      #due to nature of Google's API, there is no need for a client secret key.
 ```
-
-Separately, create
+Once you have Connectify opened in your preferred code editor, create and activate your virtual environment. Additionally, apply the secret.sh file for environment use.
 
 ```bash
+
 virtualenv env
 source env/bin/activate
+source secrets.sh
+
 ```
+
 
 ## Usage
 
+To start the application, run the following commands in your terminal.
+
 ```python
-import foobar
+# if you would like to utilize test information to play with, run the following:
 
-# returns 'words'
-foobar.pluralize('word')
+python3 -i seed_database.py
 
-# returns 'geese'
-foobar.pluralize('goose')
-
-# returns 'phenomenon'
-foobar.singularize('phenomena')
+# starts up the server
+python3 -i server.py
 ```
+
+## Connectify 2.0
+
+Some additional features and design factors I would like to add in the near future:
+- add additional data points for comparison analysis feature (utilize track/artist metadata to build fuller music taste snapshot)
+- add in messaging/commenting feature
+- further develop out Connect page map (unify UI between map and list feature)
+- improve geolocation feature
 
 ## Contributing
 
-Pull requests are welcome. 
+Pull requests are welcome. As I continue to build out features and improve UX/UI design of the app, feel free to comment or reach out with any suggestions, refactoring advice, or feature requests I can try and add to the application.
 
 ## Lets Connect!
 
