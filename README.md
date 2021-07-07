@@ -3,6 +3,10 @@
 
 </p>
 
+<p align="center">
+    // Your content
+</p>
+
 # Connectify
 
 Connectify is a music-based social media app that allows you to see how your music taste compares to other music fanatics in your area! 
