@@ -19,10 +19,10 @@ Connectify does this in 3 steps: Connects, Compares, and Creates. By connecting 
 ## Features
 
 A user can either create an account/log in using their Spotify premium account - which is authorized via Spotify's oAuth flow.
-<p align="center">
+
 ![login](https://media.giphy.com/media/iVadCUYD5cgST9KqhA/giphy.gif)
 <img height="250" src="https://i.ibb.co/zJp0NJH/Screen-Shot-2021-07-07-at-11-04-23-AM.png" alt="Connectify Logo">
-</p>
+
 Using Geolocation API and Google Maps Javascript API, the user is able to see users in their area, mapped and listed via Connect page.
 
 ![connect map](https://media.giphy.com/media/paafF5u3T7EmW1spve/giphy.gif)
