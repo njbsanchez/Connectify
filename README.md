@@ -4,10 +4,10 @@
 </p>
 
 <h1 align="center">
-    // Connectify
+    Connectify
 </h1>
 <h3 align="center">
-    // A Music-Based Social Media App
+    A Music-Based Social Media App
 </h3>
 
 # Connectify
