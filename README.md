@@ -3,9 +3,12 @@
 
 </p>
 
-<p align="center">
-    // Your content
-</p>
+<h1 align="center">
+    // Connectify
+</h1>
+<h3 align="center">
+    // A Music-Based Social Media App
+</h3>
 
 # Connectify
 
