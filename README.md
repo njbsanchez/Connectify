@@ -18,13 +18,21 @@ Connectify does this in 3 steps: Connects, Compares, and Creates. By connecting 
 
 ## Features
 
-![](http://www.reactiongifs.us/wp-content/uploads/2013/10/nuh_uh_conan_obrien.gif)
+![login](https://media.giphy.com/media/iVadCUYD5cgST9KqhA/giphy.gif)
+![oauth](https://i.ibb.co/zJp0NJH/Screen-Shot-2021-07-07-at-11-04-23-AM.png)
+![connect map](https://media.giphy.com/media/paafF5u3T7EmW1spve/giphy.gif)
+![my profile](https://media.giphy.com/media/Ga8oMboFCL3SMAwcFD/giphy.gif)
+![other profile](https://media.giphy.com/media/6AfJ7iM51loKymS8yW/giphy.gif)
+![bookmark](https://media.giphy.com/media/lMAKBzXpR9dMK2hdyM/giphy.gif)
+![create a playlist](https://media.giphy.com/media/J0YRRz5OglN1xT1aP5/giphy.gif)
+![see playlist](https://media.giphy.com/media/yyUdjy0ElHVAuwszlE/giphy.gif)
 
 ## Demo
 
 For a quick demonstration of Connectify, please click the image below - You should be sent to a youtube video that covers various features of the app.
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/s4K1UPxAdaM/0.jpg)](https://www.youtube.com/watch?v=s4K1UPxAdaM)
+
 
 ## Tech Stack
 
