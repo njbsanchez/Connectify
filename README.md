@@ -18,13 +18,26 @@ Connectify does this in 3 steps: Connects, Compares, and Creates. By connecting 
 
 ## Features
 
+A user can either create an account/log in using their Spotify premium account - which is authorized via Spotify's oAuth flow.
+
 ![login](https://media.giphy.com/media/iVadCUYD5cgST9KqhA/giphy.gif)
 <img height="250" src="https://i.ibb.co/zJp0NJH/Screen-Shot-2021-07-07-at-11-04-23-AM.png" alt="Connectify Logo">
 
+Using Geolocation API and Google Maps Javascript API, the user is able to see users in their area, mapped and listed via Connect page.
+
 ![connect map](https://media.giphy.com/media/paafF5u3T7EmW1spve/giphy.gif)
+
+The user's listening data is pulled from Spotify's API, creating a snapshot of the user's top tracks, artists, and recently played playlists.
+
 ![my profile](https://media.giphy.com/media/Ga8oMboFCL3SMAwcFD/giphy.gif)
+
+The user can peruse through the profiles of local users and see comparison analysis of music taste similarities and differences. Profiles are bookmarkable, allowing the user to categorize bookmarks based on similarity analysis.
+
 ![other profile](https://media.giphy.com/media/6AfJ7iM51loKymS8yW/giphy.gif)
 ![bookmark](https://media.giphy.com/media/lMAKBzXpR9dMK2hdyM/giphy.gif)
+
+Users can create playists based on user's they have bookmarked, opening opportunity to discover new music they may be interested in.
+
 ![create a playlist](https://media.giphy.com/media/J0YRRz5OglN1xT1aP5/giphy.gif)
 ![see playlist](https://media.giphy.com/media/yyUdjy0ElHVAuwszlE/giphy.gif)
 
