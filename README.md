@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="200" src="https://i.ibb.co/ZNYY2dW/logo.png" alt="Connectify Logo">
+  <img width="200" src="https://i.ibb.co/CV47pR3/logo-point.png" alt="Connectify Logo">
 
 </p>
 
